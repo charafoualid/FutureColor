@@ -1,11 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Color Mix Simulator</title>
+  <meta charset="UTF-8">
+  <title>Kleur- en Mengsimulator</title>
+  <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
-    <h1>Color Mix Simulator</h1>
+  <main>
+    <section id="form-section">
+      <h1>Ingrediënt Aanmaken</h1>
+      <form id="ingredient-form">
+        <label>
+          Minimale mengtijd (ms):
+          <input type="number" name="mixTime" required>
+        </label>
+
+        <label>
+          Mengsnelheid (1-10):
+          <input type="number" name="mixSpeed" min="1" max="10" required>
+        </label>
+
+        <label>
+          Kleur:
+          <input type="color" name="color" value="#c24c4c" placeholder="bv. rgb(255,0,0) of hsl(120, 100%, 50%)" required>
+        </label>
+
+        <label>
+          Structuur:
+          <select name="texture" required>
+            <option value="korrel">Korrel</option>
+            <option value="grove-korrel">Grove korrel</option>
+            <option value="glad">Glad</option>
+            <option value="slijmerig">Slijmerig</option>
+          </select>
+        </label>
+
+        <button type="submit">Voeg toe</button>
+      </form>
+    </section>
+
+    <section id="ingredients-display">
+      <h2>Ingrediënten</h2>
+      <div id="ingredients-container"></div>
+    </section>
+  </main>
+
+  <script type="module" src="src/main.js"></script>
 </body>
 </html>
