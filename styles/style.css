@@ -1,9 +1,40 @@
+/* === Algemene stijl === */
 body {
   font-family: sans-serif;
   margin: 2rem;
   background: #f9f9f9;
 }
 
+/* === Layout: 2 kolommen === */
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* Kolommen */
+.left-column,
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Algemene sectiestyling */
+#locator-form,
+#form-section,
+#ingredient-list,
+#pots-display,
+#mixing-machine,
+#mix-result {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* === Formulierstijl === */
 #ingredient-form {
   display: flex;
   flex-direction: column;
@@ -11,11 +42,22 @@ body {
   max-width: 400px;
 }
 
+input,
+select,
+button {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+}
+
+/* === Ingrediënten weergave === */
 #ingredients-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(4, 80px);
+  gap: 0.3rem;
   margin-top: 1rem;
+  justify-content: start;
 }
 
 .ingredient {
@@ -30,7 +72,7 @@ body {
   text-align: center;
 }
 
-/* Structuurverschillen */
+/* === Structuurverschillen === */
 .korrel {
   border: 2px dotted #333;
 }
@@ -46,4 +88,11 @@ body {
 .slijmerig {
   box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
   border-radius: 50%;
+}
+
+/* === Responsiviteit === */
+@media (max-width: 900px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
 }
