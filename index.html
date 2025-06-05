@@ -12,10 +12,10 @@
     <section class="left-column">
 
       <div id="locator-form">
-        <h2>Zoek Pot</h2>
+        <h2>Zoek locatie</h2>
         <!-- Placeholder voor toekomstige zoekfunctionaliteit -->
         <form>
-          <input type="text" placeholder="Naam of ID" />
+          <input type="text" placeholder="Stad of locatie" />
           <button type="submit">Zoek</button>
         </form>
       </div>
@@ -62,8 +62,13 @@
     <!-- ⚙️ Rechterkolom -->
     <section class="right-column">
       <div id="pots-display">
-        <h2>Potten</h2>
-        <!-- Hier komen potten (later met drag & drop) -->
+          <div class="pots-header">
+            <h2>Potten</h2>
+            <button type="button" id="add-pot-button">Voeg toe</button>
+          </div>
+        <div id="pots-container">
+          
+        </div>
       </div>
 
       <div id="mixing-machine">

@@ -55,7 +55,7 @@ button {
 #ingredients-container {
   display: grid;
   grid-template-columns: repeat(4, 80px);
-  gap: 0.3rem;
+  gap: 1rem;
   margin-top: 1rem;
   justify-content: start;
 }
@@ -88,6 +88,37 @@ button {
 .slijmerig {
   box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
   border-radius: 50%;
+}
+
+/* Stijl voor de Pots-header (titel + knop) */
+.pots-header {
+    display: flex;
+    gap: 1rem; /* Spreidt de elementen uit elkaar */
+    align-items: center; /* Lijn ze verticaal in het midden uit */
+    margin-bottom: 1rem; /* Wat ruimte onder de header */
+}
+
+/* Stijl voor de container van de potten */
+#pots-container {
+    display: flex; /* Of grid, afhankelijk van hoe je de potten wilt weergeven */
+    flex-wrap: wrap; /* Zodat de potten op een nieuwe regel springen als er te veel zijn */
+    gap: 1rem; /* Ruimte tussen de potten */
+}
+
+/* Basisstijl voor een dynamisch aangemaakte pot (optioneel, voor nu) */
+.pot {
+    width: 100px; /* Voorbeeld breedte */
+    height: 100px; /* Voorbeeld hoogte */
+    border: 2px solid #ccc;
+    border-radius: 50%; /* Maak het rond als een pot */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+    color: #666;
+    font-size: 0.8rem;
+    text-align: center;
+    flex-shrink: 0; /* Voorkomt dat de potten kleiner worden dan hun ingestelde breedte/hoogte */
 }
 
 /* === Responsiviteit === */
