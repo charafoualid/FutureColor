@@ -89,10 +89,25 @@ button {
   text-align: center;
 }
 
+
 /* Stijl wanneer een ingrediënt wordt gesleept */
 .ingredient.dragging {
-    opacity: 0.5; /* Maak het element half-doorzichtig */
+     /* Maak het element half-doorzichtig */
     border: 2px dashed #007bff; /* Optioneel: voeg een gestreepte rand toe */
+    cursor: grabbing; /* Verander de cursor tijdens het slepen */
+}
+
+/* Stijl wanneer een ingrediënt over een pot wordt gesleept (geldige drop-zone) */
+.pot.drag-over {
+    border: 2px dashed #00b894; /* Een opvallende kleur om aan te geven dat drop mogelijk is */
+    background-color: #e8f9f6; /* Lichtere achtergrond */
+    box-shadow: 0 0 15px rgba(0, 184, 148, 0.5); /* Een gloed */
+}
+
+/* Stijl wanneer een ingrediënt over een ongeldige pot wordt gesleept (optioneel, voor later) */
+.pot.invalid-drop {
+    border: 2px dashed #d63031; /* Rood om aan te geven dat het niet mag */
+    background-color: #ffeaea;
 }
 
 /* === Structuurverschillen === */
@@ -142,6 +157,14 @@ button {
     font-size: 0.8rem;
     text-align: center;
     flex-shrink: 0; /* Voorkomt dat de potten kleiner worden dan hun ingestelde breedte/hoogte */
+}
+
+.pot.pot-filled {
+    background-color: #e0e0e0; /* Een neutrale, lichte achtergrondkleur voor een gevulde pot */
+    border: 2px solid #555; /* Een donkerdere rand om het contrast te geven */
+    color: #333; /* Zorg dat de tekst goed leesbaar blijft */
+    /* Optioneel: Voeg een subtiele schaduw toe */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* === Responsiviteit === */

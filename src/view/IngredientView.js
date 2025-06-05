@@ -11,9 +11,9 @@ export class IngredientView{
         div.style.background = ingredient.color;
         div.textContent = `${ingredient.texture}\n${ingredient.mixSpeed}x`;
 
-        div.draggable = true; 
+        div.draggable = true;
         div.dataset.ingredientId = ingredient.id;
-        div.dataset.mixSpeed = ingredient.id;
+        div.dataset.mixSpeed = ingredient.mixSpeed;
 
         this.container.appendChild(div);
     }
