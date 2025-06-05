@@ -11,6 +11,33 @@ export class IngredientController{
 
         this.deleteIngredientsButton.addEventListener('click', this.handleClearIngredientsClick.bind(this));
         this.form.addEventListener('submit', this.handleFormSubmit.bind(this));
+
+        this.ingredientsContainer = document.getElementById('ingredients-container');
+        this.ingredientsContainer.addEventListener('dragstart', this.handleDragStart.bind(this));
+        this.ingredientsContainer.addEventListener('dragend', this.handleDragEnd.bind(this));
+        
+    }
+
+    handleDragStart(event)
+    {
+        // Zorg ervoor dat alleen ingrediënt-elementen gesleept kunnen worden
+        if (event.target.classList.contains('ingredient')) {
+
+            event.target.classList.add('dragging');
+
+            event.dataTransfer.setData('text/plain', event.target.dataset.ingredientId);
+            event.dataTransfer.setData('text/mixspeed', event.target.dataset.mixSpeed); 
+
+            event.dataTransfer.effectAllowed = 'move';
+        }
+    }
+
+    // Wordt geactiveerd wanneer het slepen is afgelopen (succesvol gedropt of afgebroken)
+    handleDragEnd(event) {
+        // Verwijder de 'dragging' klasse
+        if (event.target.classList.contains('dragging')) {
+            event.target.classList.remove('dragging');
+        }
     }
 
     handleFormSubmit(event)

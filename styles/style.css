@@ -89,6 +89,12 @@ button {
   text-align: center;
 }
 
+/* Stijl wanneer een ingrediënt wordt gesleept */
+.ingredient.dragging {
+    opacity: 0.5; /* Maak het element half-doorzichtig */
+    border: 2px dashed #007bff; /* Optioneel: voeg een gestreepte rand toe */
+}
+
 /* === Structuurverschillen === */
 .korrel {
   border: 2px dotted #333;
