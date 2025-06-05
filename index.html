@@ -1,48 +1,91 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Kleur- en Mengsimulator</title>
-  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="styles/style.css" />
 </head>
 <body>
-  <main>
-    <section id="form-section">
-      <h1>Ingrediënt Aanmaken</h1>
-      <form id="ingredient-form">
-        <label>
-          Minimale mengtijd (ms):
-          <input type="number" name="mixTime" required>
-        </label>
+  <main class="grid-container">
+    
+    <!-- 🧭 Linkerkolom -->
+    <section class="left-column">
 
-        <label>
-          Mengsnelheid (1-10):
-          <input type="number" name="mixSpeed" min="1" max="10" required>
-        </label>
+      <div id="locator-form">
+        <h2>Zoek locatie</h2>
+        <!-- Placeholder voor toekomstige zoekfunctionaliteit -->
+        <form>
+          <input type="text" placeholder="Stad of locatie" />
+          <button type="submit">Zoek</button>
+        </form>
+      </div>
 
-        <label>
-          Kleur:
-          <input type="color" name="color" value="#c24c4c" placeholder="bv. rgb(255,0,0) of hsl(120, 100%, 50%)" required>
-        </label>
+      <div id="form-section">
+        <h2>Ingrediënt Aanmaken</h2>
+        <form id="ingredient-form">
+          <label>
+            Minimale mengtijd (ms):
+            <input type="number" name="mixTime"  />
+          </label>
 
-        <label>
-          Structuur:
-          <select name="texture" required>
-            <option value="korrel">Korrel</option>
-            <option value="grove-korrel">Grove korrel</option>
-            <option value="glad">Glad</option>
-            <option value="slijmerig">Slijmerig</option>
-          </select>
-        </label>
+          <label>
+            Mengsnelheid (1-10):
+            <input type="number" name="mixSpeed"   />
+          </label>
 
-        <button type="submit">Voeg toe</button>
-      </form>
+          <label>
+            Kleur:
+            <input type="color" name="color" value="#c24c4c"  />
+          </label>
+
+          <label>
+            Structuur:
+            <select name="texture" >
+              <option value="korrel">Korrel</option>
+              <option value="grove-korrel">Grove korrel</option>
+              <option value="glad">Glad</option>
+              <option value="slijmerig">Slijmerig</option>
+            </select>
+          </label>
+
+          <button type="submit">Voeg toe</button>
+        </form>
+      </div>
+
+      <div id="ingredient-list">
+        <div class="ingredients-header">
+          <h2>Ingrediënten</h2>
+          <button class="clear" type="button" id="clear-ingredients-button">Wissen</button>
+        </div>
+        <div id="ingredients-container"></div>
+      </div>
+
     </section>
 
-    <section id="ingredients-display">
-      <h2>Ingrediënten</h2>
-      <div id="ingredients-container"></div>
+    <!-- ⚙️ Rechterkolom -->
+    <section class="right-column">
+      <div id="pots-display">
+          <div class="pots-header">
+            <h2>Potten</h2>
+              <button type="button" id="add-pot-button">Voeg toe</button>
+              <button class="clear" type="button" id="clear-pots-button">Wissen</button> 
+          </div>
+        <div id="pots-container">
+          
+        </div>
+      </div>
+
+      <div id="mixing-machine">
+        <h2>Mengmachine</h2>
+        <!-- Hier komt de simulatie van mengen -->
+      </div>
+
+      <div id="mix-result">
+        <h2>Gemengde Kleuren</h2>
+        <!-- Hier komt het resultaat van de menging -->
+      </div>
     </section>
+
   </main>
 
   <script type="module" src="src/main.js"></script>

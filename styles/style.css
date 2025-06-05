@@ -1,9 +1,40 @@
+/* === Algemene stijl === */
 body {
   font-family: sans-serif;
   margin: 2rem;
   background: #f9f9f9;
 }
 
+/* === Layout: 2 kolommen === */
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* Kolommen */
+.left-column,
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Algemene sectiestyling */
+#locator-form,
+#form-section,
+#ingredient-list,
+#pots-display,
+#mixing-machine,
+#mix-result {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* === Formulierstijl === */
 #ingredient-form {
   display: flex;
   flex-direction: column;
@@ -11,11 +42,39 @@ body {
   max-width: 400px;
 }
 
+.clear{
+  color: white;
+  background-color: #dc3546;
+  border: none;
+}
+
+input,
+select,
+button {
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+}
+
+
+
+/* === Ingrediënten weergave === */
+/* Stijl voor de Pots-header (titel + knop) */
+.ingredients-header {
+    display: flex;
+    gap: 1rem; /* Spreidt de elementen uit elkaar */
+    align-items: center; /* Lijn ze verticaal in het midden uit */
+    margin-bottom: 1rem; /* Wat ruimte onder de header */
+}
+
+
 #ingredients-container {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 80px);
   gap: 1rem;
   margin-top: 1rem;
+  justify-content: start;
 }
 
 .ingredient {
@@ -30,7 +89,28 @@ body {
   text-align: center;
 }
 
-/* Structuurverschillen */
+
+/* Stijl wanneer een ingrediënt wordt gesleept */
+.ingredient.dragging {
+     /* Maak het element half-doorzichtig */
+    border: 2px dashed #007bff; /* Optioneel: voeg een gestreepte rand toe */
+    cursor: grabbing; /* Verander de cursor tijdens het slepen */
+}
+
+/* Stijl wanneer een ingrediënt over een pot wordt gesleept (geldige drop-zone) */
+.pot.drag-over {
+    border: 2px dashed #00b894; /* Een opvallende kleur om aan te geven dat drop mogelijk is */
+    background-color: #e8f9f6; /* Lichtere achtergrond */
+    box-shadow: 0 0 15px rgba(0, 184, 148, 0.5); /* Een gloed */
+}
+
+/* Stijl wanneer een ingrediënt over een ongeldige pot wordt gesleept (optioneel, voor later) */
+.pot.invalid-drop {
+    border: 2px dashed #d63031; /* Rood om aan te geven dat het niet mag */
+    background-color: #ffeaea;
+}
+
+/* === Structuurverschillen === */
 .korrel {
   border: 2px dotted #333;
 }
@@ -46,4 +126,50 @@ body {
 .slijmerig {
   box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
   border-radius: 50%;
+}
+
+/* Stijl voor de Pots-header (titel + knop) */
+.pots-header {
+    display: flex;
+    gap: 1rem; /* Spreidt de elementen uit elkaar */
+    align-items: center; /* Lijn ze verticaal in het midden uit */
+    margin-bottom: 1rem; /* Wat ruimte onder de header */
+}
+
+/* Stijl voor de container van de potten */
+#pots-container {
+    display: flex; /* Of grid, afhankelijk van hoe je de potten wilt weergeven */
+    flex-wrap: wrap; /* Zodat de potten op een nieuwe regel springen als er te veel zijn */
+    gap: 1rem; /* Ruimte tussen de potten */
+}
+
+/* Basisstijl voor een dynamisch aangemaakte pot (optioneel, voor nu) */
+.pot {
+    width: 100px; /* Voorbeeld breedte */
+    height: 100px; /* Voorbeeld hoogte */
+    border: 2px solid #ccc;
+    border-radius: 50%; /* Maak het rond als een pot */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+    color: #666;
+    font-size: 0.8rem;
+    text-align: center;
+    flex-shrink: 0; /* Voorkomt dat de potten kleiner worden dan hun ingestelde breedte/hoogte */
+}
+
+.pot.pot-filled {
+    background-color: #e0e0e0; /* Een neutrale, lichte achtergrondkleur voor een gevulde pot */
+    border: 2px solid #555; /* Een donkerdere rand om het contrast te geven */
+    color: #333; /* Zorg dat de tekst goed leesbaar blijft */
+    /* Optioneel: Voeg een subtiele schaduw toe */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* === Responsiviteit === */
+@media (max-width: 900px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
 }
