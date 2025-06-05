@@ -9,6 +9,11 @@ export class IngredientStore {
         this.ingredients.push(ingredient);
     }
 
+    clear()
+    {
+        this.ingredients = [];
+    }
+
     getAll()
     {
         return this.ingredients;

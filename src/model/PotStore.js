@@ -7,4 +7,7 @@ export class PotStore {
         this.pots.push(pot);
     }
 
+    clear(){
+        this.pots = [];
+    }
 }

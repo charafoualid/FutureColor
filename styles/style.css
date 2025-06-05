@@ -42,6 +42,12 @@ body {
   max-width: 400px;
 }
 
+.clear{
+  color: white;
+  background-color: #dc3546;
+  border: none;
+}
+
 input,
 select,
 button {
@@ -51,7 +57,18 @@ button {
   font-size: 0.9rem;
 }
 
+
+
 /* === Ingrediënten weergave === */
+/* Stijl voor de Pots-header (titel + knop) */
+.ingredients-header {
+    display: flex;
+    gap: 1rem; /* Spreidt de elementen uit elkaar */
+    align-items: center; /* Lijn ze verticaal in het midden uit */
+    margin-bottom: 1rem; /* Wat ruimte onder de header */
+}
+
+
 #ingredients-container {
   display: grid;
   grid-template-columns: repeat(4, 80px);

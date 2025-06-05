@@ -7,7 +7,9 @@ export class IngredientController{
         this.store = new IngredientStore();
         this.view = new IngredientView('ingredients-container');
         this.form = document.getElementById('ingredient-form');
+        this.deleteIngredientsButton = document.getElementById('clear-ingredients-button');
 
+        this.deleteIngredientsButton.addEventListener('click', this.handleClearIngredientsClick.bind(this));
         this.form.addEventListener('submit', this.handleFormSubmit.bind(this));
     }
 
@@ -27,5 +29,11 @@ export class IngredientController{
         this.store.add(ingredient);
         this.view.renderIngredient(ingredient);
         this.form.reset();
+    }
+
+    handleClearIngredientsClick()
+    {
+        this.store.clear();
+        this.view.clear();
     }
 }

@@ -6,8 +6,11 @@ export class PotController {
     constructor(){
         this.store = new PotStore();
         this.view = new PotView('pots-container');
-        this.addPotButton = document.getElementById('add-pot-button');
 
+        this.addPotButton = document.getElementById('add-pot-button');
+        this.deletePotsButton = document.getElementById('clear-pots-button');
+
+        this.deletePotsButton.addEventListener('click', this.handleClearPotsClick.bind(this));
         this.addPotButton.addEventListener('click', this.handleAddPotClick.bind(this));
     }
 
@@ -16,5 +19,11 @@ export class PotController {
         const newPot = new Pot();
         this.store.add(newPot);
         this.view.renderPot(newPot);
+    }
+
+    handleClearPotsClick()
+    {
+        this.store.clear();
+        this.view.clear();
     }
 }
