@@ -18,4 +18,9 @@ export class IngredientStore {
     {
         return this.ingredients;
     }
+
+    isEmpty()
+    {
+        return this.ingredients.length === 0;    
+    }
 }

@@ -10,4 +10,9 @@ export class PotStore {
     clear(){
         this.pots = [];
     }
+
+    isEmpty()
+    {
+        return this.pots.length === 0;    
+    }
 }
