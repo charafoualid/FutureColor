@@ -72,6 +72,12 @@ export class IngredientController{
 
     handleClearIngredientsClick()
     {
+        if(this.store.isEmpty())
+        {
+            alert('Fout: Er zijn geen ingredienten om te wissen!');
+            return;
+        }
+
         this.store.clear();
         this.view.clear();
     }

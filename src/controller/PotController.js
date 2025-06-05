@@ -23,6 +23,12 @@ export class PotController {
 
     handleClearPotsClick()
     {
+        if(this.store.isEmpty())
+        {
+            alert('Fout: Er zijn geen potten om te wissen!');
+            return;
+        }
+
         this.store.clear();
         this.view.clear();
     }
