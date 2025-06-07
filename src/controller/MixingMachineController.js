@@ -42,25 +42,35 @@ export class MixingMachineController {
 
     handleAddPotToMachine(machineId, potId) {
         const machine = this.mixingMachineStore.getMachineById(machineId);
-        const pot = this.potStore.getPotById(potId); // Assumes PotStore has getPotById
+        const newPot = this.potStore.getPotById(potId);
 
-        if (machine && pot) {
-            if (pot.isEmpty()) {
+        if (machine && newPot) {
+            if (newPot.isEmpty()) {
                 alert("Kan geen lege pot aan machine toevoegen.");
                 return;
             }
-            // Optional: Check if pot is already in another machine or this one
-            machine.addPot(pot);
-            this.view.addPotToMachineView(machineId, pot);
-            console.log(`Pot ${potId} added to machine ${machineId}`);
 
-            // Visually remove or mark the pot in the PotView
-            // This requires communication back to PotController/PotView or a shared state
-            const potElement = document.querySelector(`.pot[data-pot-id="${potId}"]`);
-            if (potElement) {
-                potElement.style.opacity = '0.5'; // Mark as used
-                potElement.draggable = false; // Prevent re-dragging
-                // Or potElement.remove(); if it should disappear
+            // Add the new pot to the machine; this returns the old pot if one existed
+            const oldPot = machine.addPot(newPot);
+
+            // If there was an old pot in the machine, make it available again in the PotView
+            if (oldPot) {
+                const oldPotElement = document.querySelector(`.pot[data-pot-id="${oldPot.id}"]`);
+                if (oldPotElement) {
+                    oldPotElement.style.opacity = '1'; // Make it fully visible
+                    oldPotElement.draggable = true;    // Make it draggable again
+                }
+            }
+            
+            // Update the machine's view to show the new pot
+            this.view.addPotToMachineView(machineId, newPot);
+            console.log(`Pot ${newPot.id} added to machine ${machineId}. Pot ${oldPot ? oldPot.id : 'None'} was replaced.`);
+
+            // Visually mark the new pot as used in the PotView
+            const newPotElement = document.querySelector(`.pot[data-pot-id="${newPot.id}"]`);
+            if (newPotElement) {
+                newPotElement.style.opacity = '0.5'; // Mark as used
+                newPotElement.draggable = false; // Prevent re-dragging while in machine
             }
 
         } else {

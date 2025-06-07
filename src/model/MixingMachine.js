@@ -36,12 +36,18 @@ export class MixingMachine {
 
     /**
      * Adds a pot to the mixing machine.
+     * @param {Pot} pot The pot to add.
+     * @returns {Pot|null} The pot that was previously in the machine, or null if there wasn't one.
      */
     addPot(pot) {
+        let oldPot = null;
         if (pot instanceof Pot) {
-            this.inputPot = pot;
+            oldPot = this.inputPot;
+            this.inputPot = pot;    
+            return oldPot;
         } else {
             console.error("Invalid pot object provided to MixingMachine.");
+            return null;
         }
     }
 
