@@ -144,12 +144,23 @@
     addPotToMachineView(machineId, pot) {
         const machineDiv = this.container.querySelector(`.mixing-machine-instance[data-machine-id="${machineId}"]`);
         if (machineDiv) {
-            const potsList = machineDiv.querySelector('.machine-pots-list');
+            const potsListContainer = machineDiv.querySelector('.machine-pots-list');
+            potsListContainer.innerHTML = ''; // Clear the previous pot, as a machine holds one pot
+
             const potElement = document.createElement('div');
-            potElement.classList.add('pot-in-machine');
-            potElement.textContent = `Pot ID: ${pot.id.substring(0,4)} (${pot.getContents().length} ingred.)`;
-            // You might want to make this draggable out or removable
-            potsList.appendChild(potElement);
+            potElement.classList.add('pot'); // Use the main 'pot' class for styling
+            // potElement.setAttribute('data-pot-id', pot.id); // Optional: keep for reference
+
+            let potText = `Pot (${pot.id.substring(0, 4)})`;
+            if (!pot.isEmpty()) {
+                potElement.classList.add('pot-filled'); // Apply 'pot-filled' style
+                potText += ` (${pot.getContents().length} items)`;
+            } else {
+                potText += " (Leeg)";
+            }
+            potElement.textContent = potText;
+
+            potsListContainer.appendChild(potElement);
         }
     }
 
