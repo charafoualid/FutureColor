@@ -73,13 +73,27 @@ export class MixingMachine {
 
         console.log(`Mixing machine ${this.name} (ID: ${this.id}) started mixing with speed ${this.mixSpeedSetting}x for ${this.mixTimeSetting}ms.`);
 
-        let color1 = this.inputPot.getContents()[0].color;
-        let color2 = this.inputPot.getContents()[1].color;
+        const ingredients = this.inputPot.getContents();
+        let mixedColor;
+
+        if (ingredients.length === 1) {
+            // If only one ingredient, the result is its color
+            mixedColor = ingredients[0].color;
+        } else if (ingredients.length >= 2) {
+            // If two or more ingredients, mix the first two
+            let color1 = ingredients[0].color;
+            let color2 = ingredients[1].color;
+            mixedColor = this.#mixColors(color1, color2);
+        } else {
+            this.status = MIXING_MACHINE_STATUS.IDLE;
+            alert("Kan het mengen niet starten: Pot is leeg na controle.");
+            return;
+        }
 
         // Simulate mixing time
         setTimeout(() => {
             this.status = MIXING_MACHINE_STATUS.COMPLETE;
-            this.mixResult = { color: this.#mixColors(color1, color2), message: 'Mixen voltooid!' };
+            this.mixResult = { color: mixedColor, message: 'Mixen voltooid!' };
             console.log(`Mixing machine ${this.name} finished. Result:`, this.mixResult);
         }, this.mixTimeSetting);
     }
