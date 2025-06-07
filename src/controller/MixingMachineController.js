@@ -93,12 +93,19 @@ export class MixingMachineController {
             const checkInterval = setInterval(() => {
                 if (machine.status === MIXING_MACHINE_STATUS.COMPLETE) {
                     clearInterval(checkInterval);
-                    this.view.updateMachineStatus(machineId, MIXING_MACHINE_STATUS.COMPLETE, machine.getResult());
+                    const result = machine.getResult();
+                    this.view.updateMachineStatus(machineId, MIXING_MACHINE_STATUS.COMPLETE, result);
+                    
+                    // Check for specific error message from mixing process
+                    if (result && result.message && result.message.startsWith("Mixfout: Machinesnelheid")) {
+                        alert(result.message);
+                    }
+
                     // Clear the pot from the machine model and UI after mixing is complete.
                     this.view.clearPotsFromMachineView(machineId);
                     machine.removePot();
                 }
-            }, 100); // Check every 100ms
+            }, 100); // Poll interval for checking mixing status.
         }
     }
 }

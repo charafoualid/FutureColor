@@ -74,26 +74,33 @@ export class MixingMachine {
         console.log(`Mixing machine ${this.name} (ID: ${this.id}) started mixing with speed ${this.mixSpeedSetting}x for ${this.mixTimeSetting}ms.`);
 
         const ingredients = this.inputPot.getContents();
+        const requiredSpeed = this.inputPot.getDominantMixSpeed();
         let mixedColor;
+        let message = 'Mixen voltooid!'; // Default success message
 
-        if (ingredients.length === 1) {
-            // If only one ingredient, the result is that ingredient's color.
-            mixedColor = ingredients[0].color;
-        } else if (ingredients.length >= 2) {
-            // If two or more, mix the colors of the first two ingredients.
-            let color1 = ingredients[0].color;
-            let color2 = ingredients[1].color;
-            mixedColor = this.#mixColors(color1, color2);
+        // Check for speed mismatch
+        if (requiredSpeed !== null && this.mixSpeedSetting !== requiredSpeed) {
+            mixedColor = this.#generateRandomHexColor();
+            message = `Mixfout: Machinesnelheid (${this.mixSpeedSetting}) komt niet overeen met de vereiste snelheid (${requiredSpeed}). Willekeurige kleur geproduceerd.`;
         } else {
-            this.status = MIXING_MACHINE_STATUS.IDLE;
-            alert("Kan het mengen niet starten: Pot is leeg na controle.");
-            return;
+            // Original mixing logic if speeds match or no specific speed is required (though current pot logic implies a speed if ingredients exist)
+            if (ingredients.length === 1) {
+                mixedColor = ingredients[0].color;
+            } else if (ingredients.length >= 2) {
+                let color1 = ingredients[0].color;
+                let color2 = ingredients[1].color;
+                mixedColor = this.#mixColors(color1, color2);
+            } else {
+                this.status = MIXING_MACHINE_STATUS.IDLE;
+                alert("Kan het mengen niet starten: Pot is leeg na controle.");
+                return;
+            }
         }
 
         // Simulate mixing time
         setTimeout(() => {
             this.status = MIXING_MACHINE_STATUS.COMPLETE;
-            this.mixResult = { color: mixedColor, message: 'Mixen voltooid!' };
+            this.mixResult = { color: mixedColor, message: message };
             console.log(`Mixing machine ${this.name} finished. Result:`, this.mixResult);
         }, this.mixTimeSetting);
     }
@@ -121,6 +128,14 @@ export class MixingMachine {
         };
 
         return this.#rgbToHex(mixedRgb.r, mixedRgb.g, mixedRgb.b);
+    }
+
+    #generateRandomHexColor() {
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += Math.floor(Math.random() * 16).toString(16);
+        }
+        return color.toUpperCase();
     }
 
     getContents() {
