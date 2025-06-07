@@ -1,4 +1,4 @@
-﻿import { MixingMachine } from '../model/MixingMachine.js';
+import { MixingMachine } from '../model/MixingMachine.js';
 import { MixingMachineStore } from '../model/MixingMachineStore.js';
 import { MixingMachineView } from '../view/MixingMachineView.js';
 import { MIXING_MACHINE_STATUS } from '../constants.js';
@@ -53,7 +53,7 @@ export class MixingMachineController {
             // Add the new pot to the machine; this returns the old pot if one existed
             const oldPot = machine.addPot(newPot);
 
-            // If there was an old pot in the machine, make it available again in the PotView
+            // If a pot was replaced, make the old pot available again in the PotView.
             if (oldPot) {
                 const oldPotElement = document.querySelector(`.pot[data-pot-id="${oldPot.id}"]`);
                 if (oldPotElement) {
@@ -62,11 +62,11 @@ export class MixingMachineController {
                 }
             }
             
-            // Update the machine's view to show the new pot
+            // Update the machine's UI to display the new pot.
             this.view.addPotToMachineView(machineId, newPot);
             console.log(`Pot ${newPot.id} added to machine ${machineId}. Pot ${oldPot ? oldPot.id : 'None'} was replaced.`);
 
-            // Visually mark the new pot as used in the PotView
+            // Mark the new pot as 'in use' in the PotView.
             const newPotElement = document.querySelector(`.pot[data-pot-id="${newPot.id}"]`);
             if (newPotElement) {
                 newPotElement.style.opacity = '0.5'; // Mark as used
@@ -88,13 +88,13 @@ export class MixingMachineController {
             this.view.updateMachineStatus(machineId, 'mixing');
             machine.startMixing();
 
-            // Listen for completion (since startMixing is async with setTimeout)
-            // A more robust solution would use events or promises from the MixingMachine model
+            // Poll for mixing completion as startMixing uses setTimeout.
+            // TODO: Refactor to use events or promises for completion notification instead of polling.
             const checkInterval = setInterval(() => {
                 if (machine.status === MIXING_MACHINE_STATUS.COMPLETE) {
                     clearInterval(checkInterval);
                     this.view.updateMachineStatus(machineId, MIXING_MACHINE_STATUS.COMPLETE, machine.getResult());
-                    // After mixing, clear the pots from the machine model and view
+                    // Clear the pot from the machine model and UI after mixing is complete.
                     this.view.clearPotsFromMachineView(machineId);
                     machine.removePot();
                 }

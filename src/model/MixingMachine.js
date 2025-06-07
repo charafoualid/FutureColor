@@ -77,10 +77,10 @@ export class MixingMachine {
         let mixedColor;
 
         if (ingredients.length === 1) {
-            // If only one ingredient, the result is its color
+            // If only one ingredient, the result is that ingredient's color.
             mixedColor = ingredients[0].color;
         } else if (ingredients.length >= 2) {
-            // If two or more ingredients, mix the first two
+            // If two or more, mix the colors of the first two ingredients.
             let color1 = ingredients[0].color;
             let color2 = ingredients[1].color;
             mixedColor = this.#mixColors(color1, color2);
