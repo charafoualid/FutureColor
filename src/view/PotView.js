@@ -23,7 +23,7 @@ export class PotView {
     }
 
     handleDragOver(event, pot) {
-        event.preventDefault(); // CRUCIAAL: Laat drop toe
+        event.preventDefault(); 
         event.currentTarget.classList.add('drag-over'); // Visuele feedback
     }
 
