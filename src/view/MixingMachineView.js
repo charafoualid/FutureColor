@@ -77,10 +77,8 @@ export class MixingMachineView {
                 <input type="number" class="mix-time-input" value="${machine.mixTimeSetting}" min="100" step="100" data-machine-id="${machine.id}">
             </label>
             <div class="machine-pots-dropzone" data-machine-id="${machine.id}">
-                <p>Sleep potten hierheen</p>
-                <div class="machine-pots-list">
-                    <!-- Pots added to this machine will appear here -->
-                </div>
+                <p class="dropzone-placeholder">Sleep potten hierheen</p>
+                <!-- Pot will be added here directly by replacing the placeholder -->
             </div>
             <button class="start-mix-button" data-machine-id="${machine.id}">Start Mix</button>
             <div class="machine-status">Status: ${machine.status}</div>
@@ -138,8 +136,24 @@ export class MixingMachineView {
         const colorSwatch = document.createElement('div');
         colorSwatch.classList.add('ingredient'); // Reuse .ingredient styling for the swatch
         colorSwatch.style.backgroundColor = result.color;
-        colorSwatch.textContent = result.color; // Display the hex code of the mixed color
-        colorSwatch.title = `Mixed by machine ${machineId.substring(0,8)}. Message: ${result.message}`; // Add machine ID and original message as a tooltip
+        colorSwatch.textContent = result.color; 
+        colorSwatch.title = `Mixed by machine ${machineId.substring(0,8)}. Message: ${result.message}`; 
+
+        // Make the result draggable like a pot
+        colorSwatch.draggable = true;
+        colorSwatch.setAttribute('data-pot-id', `mixed-${machineId}-${Date.now()}`); // Give it a unique ID for potential reuse
+        colorSwatch.setAttribute('data-is-mixed-result', 'true');
+        // Add event listeners for dragging if these results are meant to be moved like pots
+        colorSwatch.addEventListener('dragstart', (event) => {
+            // For simplicity, we won't set pot-specific data, but you could if needed
+            event.dataTransfer.setData('text/plain', colorSwatch.textContent); // Example data
+            event.dataTransfer.effectAllowed = 'move';
+            event.target.classList.add('dragging-pot'); // Reuse pot dragging style
+        });
+        colorSwatch.addEventListener('dragend', (event) => {
+            event.target.classList.remove('dragging-pot');
+        });
+
 
         resultsList.appendChild(colorSwatch);
     }
@@ -147,31 +161,31 @@ export class MixingMachineView {
     addPotToMachineView(machineId, pot) {
         const machineDiv = this.container.querySelector(`.mixing-machine-instance[data-machine-id="${machineId}"]`);
         if (machineDiv) {
-            const potsListContainer = machineDiv.querySelector('.machine-pots-list');
-            potsListContainer.innerHTML = ''; // Clear the previous pot, as a machine holds one pot
+            const dropzone = machineDiv.querySelector('.machine-pots-dropzone');
+            dropzone.innerHTML = ''; // Clear placeholder or previous pot
 
             const potElement = document.createElement('div');
-            potElement.classList.add('pot'); // Use the main 'pot' class for styling
-            // potElement.setAttribute('data-pot-id', pot.id); // Optional: keep for reference
+            potElement.classList.add('pot'); 
+            // potElement.setAttribute('data-pot-id', pot.id); // Optional
 
             let potText = `Pot (${pot.id.substring(0, 4)})`;
             if (!pot.isEmpty()) {
-                potElement.classList.add('pot-filled'); // Apply 'pot-filled' style
+                potElement.classList.add('pot-filled'); 
                 potText += ` (${pot.getContents().length} items)`;
             } else {
-                potText += " (Leeg)";
+                potText += " (Leeg)"; // Should not happen based on controller logic
             }
             potElement.textContent = potText;
 
-            potsListContainer.appendChild(potElement);
+            dropzone.appendChild(potElement);
         }
     }
 
     clearPotsFromMachineView(machineId) {
         const machineDiv = this.container.querySelector(`.mixing-machine-instance[data-machine-id="${machineId}"]`);
         if (machineDiv) {
-            const potsList = machineDiv.querySelector('.machine-pots-list');
-            potsList.innerHTML = ''; // Clear previous pots
+            const dropzone = machineDiv.querySelector('.machine-pots-dropzone');
+            dropzone.innerHTML = '<p class="dropzone-placeholder">Sleep potten hierheen</p>'; // Restore placeholder
         }
     }
 
