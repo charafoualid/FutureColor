@@ -1,4 +1,6 @@
-﻿export class MixingMachineView {
+﻿import { MIXING_MACHINE_STATUS } from '../constants.js';
+
+export class MixingMachineView {
     constructor(containerId, resultContainerId) {
         this.container = document.getElementById(containerId);
         this.resultContainer = document.getElementById(resultContainerId); // For displaying mix results
@@ -119,12 +121,12 @@
         if (machineDiv) {
             machineDiv.querySelector('.machine-status').textContent = `Status: ${status}`;
             const resultDiv = machineDiv.querySelector('.machine-result');
-            if (status === 'complete' && result) {
-                resultDiv.innerHTML = `Resultaat: <div style="width: 30px; height: 30px; background-color: ${result.color}; border: 1px solid #000;"></div> ${result.message}`;
-                // Also add to the global results list
+            // Remove direct display of result in machine container
+            resultDiv.innerHTML = ''; // Clear any previous machine-specific result text
+
+            if (status === MIXING_MACHINE_STATUS.COMPLETE && result) {
+                // Call renderMixResult to display in the global results list
                 this.renderMixResult(machineId, result);
-            } else {
-                resultDiv.innerHTML = '';
             }
         }
     }
@@ -133,12 +135,13 @@
         const resultsList = document.getElementById('mix-results-list');
         if (!resultsList) return;
 
-        const resultDiv = document.createElement('div');
-        resultDiv.classList.add('mix-result-item');
-        resultDiv.innerHTML = `
-            <p>Machine ${machineId.substring(0,8)}: <span style="color:${result.color}; font-weight:bold;">${result.color}</span></p>
-        `;
-        resultsList.appendChild(resultDiv);
+        const colorSwatch = document.createElement('div');
+        colorSwatch.classList.add('ingredient'); // Reuse .ingredient styling for the swatch
+        colorSwatch.style.backgroundColor = result.color;
+        colorSwatch.textContent = result.color; // Display the hex code of the mixed color
+        colorSwatch.title = `Mixed by machine ${machineId.substring(0,8)}. Message: ${result.message}`; // Add machine ID and original message as a tooltip
+
+        resultsList.appendChild(colorSwatch);
     }
 
     addPotToMachineView(machineId, pot) {

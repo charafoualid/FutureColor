@@ -1,6 +1,7 @@
 ﻿import { MixingMachine } from '../model/MixingMachine.js';
 import { MixingMachineStore } from '../model/MixingMachineStore.js';
 import { MixingMachineView } from '../view/MixingMachineView.js';
+import { MIXING_MACHINE_STATUS } from '../constants.js';
 
 export class MixingMachineController {
     constructor(potStore) {
@@ -80,9 +81,9 @@ export class MixingMachineController {
             // Listen for completion (since startMixing is async with setTimeout)
             // A more robust solution would use events or promises from the MixingMachine model
             const checkInterval = setInterval(() => {
-                if (machine.status === 'complete') {
+                if (machine.status === MIXING_MACHINE_STATUS.COMPLETE) {
                     clearInterval(checkInterval);
-                    this.view.updateMachineStatus(machineId, 'complete', machine.getResult());
+                    this.view.updateMachineStatus(machineId, MIXING_MACHINE_STATUS.COMPLETE, machine.getResult());
                     // After mixing, clear the pots from the machine model and view
                     this.view.clearPotsFromMachineView(machineId);
                     // Note: The original pots in PotStore are not cleared here,

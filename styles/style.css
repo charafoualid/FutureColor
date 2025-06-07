@@ -172,8 +172,6 @@ button {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* ...existing code... */
-
 /* === Mixing Machine === */
 .mixing-machine-header {
     display: flex;
@@ -258,12 +256,12 @@ button {
     font-weight: bold;
 }
 
-#mix-results-list .mix-result-item {
-    padding: 0.5rem;
-    border-bottom: 1px solid #eee;
-}
-#mix-results-list .mix-result-item:last-child {
-    border-bottom: none;
+#mix-results-list {
+  display: grid;
+  grid-template-columns: repeat(4, 80px); /* Match ingredient container styling */
+  gap: 1rem; /* Match ingredient container styling */
+  margin-top: 1rem; /* Space above the grid */
+  justify-content: start; /* Align grid items to the start */
 }
 
 .pot.dragging-pot {
