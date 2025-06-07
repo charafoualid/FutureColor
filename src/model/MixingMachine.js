@@ -1,0 +1,113 @@
+﻿import { Pot } from './Pot.js';
+import { MIXING_MACHINE_STATUS } from '../constants.js';
+
+export class MixingMachine {
+    constructor(name = 'New Machine') {
+        this.id = crypto.randomUUID();
+        this.name = name;
+        this.mixSpeedSetting = 1;
+        this.mixTimeSetting = 1000; // Default mix time in milliseconds
+        this.inputPot = null;
+        this.status = MIXING_MACHINE_STATUS.IDLE;
+        this.mixResult = null;
+    }
+
+    /**
+     * Sets the mixing speed for this machine.
+     */
+    setMixSpeed(speed) {
+        if (typeof speed === 'number' && speed > 0) {
+            this.mixSpeedSetting = speed;
+        } else {
+            console.error("Invalid mix speed provided.");
+        }
+    }
+
+    /**
+     * Sets the mixing time for this machine.
+     */
+    setMixTime(time) {
+        if (typeof time === 'number' && time > 0) {
+            this.mixTimeSetting = time;
+        } else {
+            console.error("Invalid mix time provided.");
+        }
+    }
+
+    /**
+     * Adds a pot to the mixing machine.
+     */
+    addPot(pot) {
+        if (pot instanceof Pot) {
+            this.inputPot = pot;
+        } else {
+            console.error("Invalid pot object provided to MixingMachine.");
+        }
+    }
+
+    /**
+     * Clears all pots from the mixing machine.
+     */
+    removePot() {
+        this.inputPot = null;
+        this.mixResult = null;
+        this.status = MIXING_MACHINE_STATUS.IDLE;
+    }
+
+    /**
+     * Initiates the mixing process.
+     */
+    startMixing() {
+        if (!this.inputPot) {
+            alert("Kan het mengen niet starten: Geen pot in de machine.");
+            return;
+        }
+
+        this.status = MIXING_MACHINE_STATUS.MIXING;
+
+        console.log(`Mixing machine ${this.name} (ID: ${this.id}) started mixing with speed ${this.mixSpeedSetting}x for ${this.mixTimeSetting}ms.`);
+
+        let color1 = this.inputPot.getContents()[0].color;
+        let color2 = this.inputPot.getContents()[1].color;
+
+        // Simulate mixing time
+        setTimeout(() => {
+            this.status = MIXING_MACHINE_STATUS.COMPLETE;
+            this.mixResult = { color: this.#mixColors(color1, color2), message: 'Mixen voltooid!' };
+            console.log(`Mixing machine ${this.name} finished. Result:`, this.mixResult);
+        }, this.mixTimeSetting);
+    }
+
+    #hexToRgb(hex) {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+
+        return { r, g, b };
+    }
+
+    #rgbToHex(r, g, b) {
+        return `#` + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+    }
+
+    #mixColors(color1, color2) {
+        const rgb1 = this.#hexToRgb(color1);
+        const rgb2 = this.#hexToRgb(color2);
+
+        const mixedRgb = {
+            r: Math.min(255, Math.floor((rgb1.r + rgb2.r) / 2)),
+            g: Math.min(255, Math.floor((rgb1.g + rgb2.g) / 2)),
+            b: Math.min(255, Math.floor((rgb1.b + rgb2.b) / 2))
+        };
+
+        return this.#rgbToHex(mixedRgb.r, mixedRgb.g, mixedRgb.b);
+    }
+
+    getContents() {
+        return this.inputPot;
+    }
+
+    getResult() {
+        return this.mixResult;
+    }
+}
