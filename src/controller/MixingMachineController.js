@@ -96,10 +96,7 @@ export class MixingMachineController {
                     this.view.updateMachineStatus(machineId, MIXING_MACHINE_STATUS.COMPLETE, machine.getResult());
                     // After mixing, clear the pots from the machine model and view
                     this.view.clearPotsFromMachineView(machineId);
-                    // Note: The original pots in PotStore are not cleared here,
-                    // they are just no longer in the machine. You might want to clear them
-                    // or reset their 'used' state if they are to be reused.
-                    machine.clearPots(); // Clear pots from the machine model
+                    machine.removePot();
                 }
             }, 100); // Check every 100ms
         }
