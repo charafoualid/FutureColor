@@ -8,7 +8,7 @@ export async function fetchData(cityName) {
 
     try {
         // Build geocoding API URL to get latitude and longitude for the city
-        const geocodingUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=5&format=json&language=nl`;
+        const geocodingUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=1&format=json&language=nl`;
         const geoResponse = await fetch(geocodingUrl);
 
         // Check if geocoding API call was successful
@@ -40,16 +40,8 @@ export async function fetchData(cityName) {
 
         console.log("Weather data for", foundCityName, ":", weatherData);
 
-        // Check if current weather data is available
-        if (weatherData.current) {
-
-            const temperature = weatherData.current.temperature_2m;
-            const precipitation = weatherData.current.precipitation !== 0 ? "ja" : "nee";
-
-            // Show alert with current temperature and precipitation info
-            alert(`Huidige temperatuur in ${foundCityName}: ${temperature}°C. Neerslag: ${precipitation}`);
-
-        } else {
+        if (!weatherData.current) {
+            
             // Show alert if no temperature data is available
             alert(`Geen temperatuurgegevens beschikbaar voor ${foundCityName}.`);
         }
