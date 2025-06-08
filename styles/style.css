@@ -57,7 +57,12 @@ button {
   font-size: 0.9rem;
 }
 
-
+.container-header {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
 
 /* === Ingrediënten weergave === */
 /* Stijl voor de Pots-header (titel + knop) */
@@ -165,6 +170,107 @@ button {
     color: #333; /* Zorg dat de tekst goed leesbaar blijft */
     /* Optioneel: Voeg een subtiele schaduw toe */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* === Mixing Machine === */
+.mixing-machine-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+#mixing-machines-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.mixing-machine-instance {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 6px;
+    background-color: #fdfdfd;
+}
+
+.mixing-machine-instance h3 {
+    margin-top: 0;
+}
+
+.mixing-machine-instance label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.mixing-machine-instance input[type="number"] {
+    width: 80px;
+    margin-left: 0.5rem;
+}
+
+.machine-pots-dropzone {
+    border: 2px dashed #ccc;
+    padding: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    min-height: 120px;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.machine-pots-dropzone.drag-over-machine {
+    border-color: #007bff;
+    background-color: #e9f5ff;
+}
+
+.machine-pots-list {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.pot-in-machine {
+    background-color: #e0e0e0;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    border: 1px solid #ccc;
+}
+
+.start-mix-button {
+    margin-top: 0.5rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+}
+
+.machine-status {
+    margin-top: 0.5rem;
+    font-style: italic;
+    color: #555;
+}
+
+.machine-result {
+    margin-top: 0.5rem;
+    font-weight: bold;
+}
+
+#mix-results-list {
+  display: grid;
+  grid-template-columns: repeat(4, 80px); /* Match ingredient container styling */
+  gap: 1rem; /* Match ingredient container styling */
+  margin-top: 1rem; /* Space above the grid */
+  justify-content: start; /* Align grid items to the start */
+}
+
+.pot.dragging-pot {
+    opacity: 0.4;
+    border: 2px dashed #007bff;
 }
 
 /* === Responsiviteit === */

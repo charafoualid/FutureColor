@@ -15,6 +15,17 @@ export class PotView {
         div.setAttribute('data-pot-id', pot.id);
         div.textContent = `Pot ${this.container.children.length + 1}`;
 
+        div.draggable = true;
+        div.addEventListener('dragstart', (event) => {
+            event.dataTransfer.setData('text/pot-id', pot.id);
+            event.dataTransfer.effectAllowed = 'move';
+            // Optional: add a 'dragging' class to the pot itself
+            event.target.classList.add('dragging-pot');
+        });
+        div.addEventListener('dragend', (event) => {
+            event.target.classList.remove('dragging-pot');
+        });
+
         div.addEventListener('dragover', (event) => this.handleDragOver(event, pot));
         div.addEventListener('dragleave', (event) => this.handleDragLeave(event, pot));
         div.addEventListener('drop', (event) => this.handleDrop(event, pot));
