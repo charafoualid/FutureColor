@@ -2,12 +2,14 @@ import { MixingMachine } from '../model/MixingMachine.js';
 import { MixingMachineStore } from '../model/MixingMachineStore.js';
 import { MixingMachineView } from '../view/MixingMachineView.js';
 import { MIXING_MACHINE_STATUS } from '../constants.js';
+import { fetchData as fetchWeatherData } from '../services/weatherAPI.js'; // Import weather API
 
 export class MixingMachineController {
     constructor(potStore) {
         this.mixingMachineStore = new MixingMachineStore();
         this.view = new MixingMachineView('mixing-machine', 'mix-result');
         this.potStore = potStore;
+        this.locationInputElement = document.getElementById('location-input'); // Get location input element
 
         this.view.setOnAddMachineCallback(this.handleAddMachine.bind(this));
         this.view.setOnStartMixCallback(this.handleStartMix.bind(this));
@@ -78,34 +80,95 @@ export class MixingMachineController {
         }
     }
 
-    handleStartMix(machineId) {
+    async handleStartMix(machineId) { // Made async to await weather data
         const machine = this.mixingMachineStore.getMachineById(machineId);
-        if (machine) {
-            if (!machine.inputPot) {
-                alert("Voeg eerst een pot toe aan de machine voordat je start met mixen.");
-                return;
-            }
-            this.view.updateMachineStatus(machineId, 'mixing');
-            machine.startMixing();
 
-            // Poll for mixing completion as startMixing uses setTimeout.
-            // TODO: Refactor to use events or promises for completion notification instead of polling.
-            const checkInterval = setInterval(() => {
-                if (machine.status === MIXING_MACHINE_STATUS.COMPLETE) {
-                    clearInterval(checkInterval);
-                    const result = machine.getResult();
-                    this.view.updateMachineStatus(machineId, MIXING_MACHINE_STATUS.COMPLETE, result);
-                    
-                    // Check for specific error message from mixing process
-                    if (result && result.message && result.message.startsWith("Mixfout: Machinesnelheid")) {
-                        alert(result.message);
-                    }
-
-                    // Clear the pot from the machine model and UI after mixing is complete.
-                    this.view.clearPotsFromMachineView(machineId);
-                    machine.removePot();
-                }
-            }, 100); // Poll interval for checking mixing status.
+        if (!machine.inputPot) {
+            alert("Voeg eerst een pot toe aan de machine voordat je start met mixen.");
+            return;
         }
+
+        const currentCity = this.locationInputElement ? this.locationInputElement.value.trim() : null;
+        let weatherData = null;
+        let weatherAlerts = [];
+
+        if (currentCity) {
+            weatherData = await fetchWeatherData(currentCity); // Await the weather data
+        }
+
+        const originalMixTime = machine.mixTimeSetting; // Store original time
+        let adjustedMixTime = originalMixTime;
+        let timeAdjustmentFactor = 1.0;
+
+        if (weatherData && weatherData.current && 
+            typeof weatherData.current.temperature_2m !== 'undefined' && 
+            typeof weatherData.current.precipitation !== 'undefined') {
+            
+            const temp = weatherData.current.temperature_2m;
+            const precipitationAmount = weatherData.current.precipitation;
+
+            // Rule: Als het neerslag is (precipitation > 0) 10% meer mengtijd.
+            if (precipitationAmount > 0) {
+                timeAdjustmentFactor += 0.10;
+                weatherAlerts.push(`Neerslag (${precipitationAmount}mm) gedetecteerd: mengtijd +10%.`);
+                console.log(`Weather: Precipitation detected (${precipitationAmount}mm), increasing mix time by 10%.`);
+            }
+
+            // Rule: Onder de 10 graden 15% langer mengen.
+            if (temp < 10) {
+                timeAdjustmentFactor += 0.15; // Additive with precipitation rule
+                weatherAlerts.push(`Temperatuur (${temp}°C) is onder 10°C: mengtijd +15%.`);
+                console.log(`Weather: Temperature ${temp}°C (<10°C), increasing mix time by 15%.`);
+            }
+            
+            adjustedMixTime = Math.round(originalMixTime * timeAdjustmentFactor);
+
+            // Rule: Als het boven de 35 graden mag er maximaal 1 mengmachine draaien.
+            if (temp > 35) {
+                console.log(`Weather: Temperature ${temp}°C (>35°C), checking active machines.`);
+                const activeMixingMachines = this.mixingMachineStore.getAllMachines().filter(
+                    m => m.id !== machineId && m.status === MIXING_MACHINE_STATUS.MIXING
+                ).length;
+                
+                if (activeMixingMachines >= 1) {
+                    alert(`Hoge temperatuur (${temp}°C)! Er draait al een andere mengmachine. Maximaal 1 machine toegestaan boven 35°C. Deze mix wordt niet gestart.`);
+                    return; // Prevent starting this mix
+                }
+                weatherAlerts.push(`Temperatuur (${temp}°C) is boven 35°C: maximaal 1 machine mag tegelijk draaien.`);
+            }
+            
+        } else if (currentCity) {
+            // Weather data fetch was attempted but failed or data was incomplete
+            weatherAlerts.push(`Kon geen volledige weerdata ophalen voor ${currentCity}. Mengtijd wordt niet aangepast.`);
+        }
+
+        if (weatherAlerts.length > 0) {
+            alert("Weercondities update:\n" + weatherAlerts.join("\n"));
+        }
+        
+        machine.setMixTime(adjustedMixTime); // Apply adjusted time
+        if (adjustedMixTime !== originalMixTime) {
+            console.log(`Original mix time: ${originalMixTime}ms, Adjusted mix time for machine ${machineId}: ${adjustedMixTime}ms`);
+        }
+
+        this.view.updateMachineStatus(machineId, MIXING_MACHINE_STATUS.MIXING); // Use constant
+        machine.startMixing();
+
+        const checkInterval = setInterval(() => {
+            if (machine.status === MIXING_MACHINE_STATUS.COMPLETE || machine.status === MIXING_MACHINE_STATUS.IDLE) { // Check IDLE in case mix fails early
+                clearInterval(checkInterval);
+                const result = machine.getResult();
+                this.view.updateMachineStatus(machineId, machine.status, result); // Use constant
+                
+                if (result && result.message && result.message.startsWith("Mixfout: Machinesnelheid")) {
+                    alert(result.message);
+                }
+
+                this.view.clearPotsFromMachineView(machineId);
+                machine.removePot(); 
+                machine.setMixTime(originalMixTime); // IMPORTANT: Reset machine's mix time to its original setting
+                console.log(`Mix for machine ${machineId} ended. Mix time setting reset to ${originalMixTime}ms.`);
+            }
+        }, 100);
     }
 }
