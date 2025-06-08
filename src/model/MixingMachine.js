@@ -1,5 +1,6 @@
 ﻿import { Pot } from './Pot.js';
 import { MIXING_MACHINE_STATUS } from '../constants.js';
+import { hexToRgb, rgbToHex } from '../utils/colorUtils.js';
 
 export class MixingMachine {
     constructor(name = 'New Machine') {
@@ -105,21 +106,9 @@ export class MixingMachine {
         }, this.mixTimeSetting);
     }
 
-    #hexToRgb(hex) {
-        const r = parseInt(hex.slice(1, 3), 16);
-        const g = parseInt(hex.slice(3, 5), 16);
-        const b = parseInt(hex.slice(5, 7), 16);
-
-        return { r, g, b };
-    }
-
-    #rgbToHex(r, g, b) {
-        return `#` + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
-    }
-
     #mixColors(color1, color2) {
-        const rgb1 = this.#hexToRgb(color1);
-        const rgb2 = this.#hexToRgb(color2);
+        const rgb1 = hexToRgb(color1);
+        const rgb2 = hexToRgb(color2);
 
         const mixedRgb = {
             r: Math.min(255, Math.floor((rgb1.r + rgb2.r) / 2)),
@@ -127,7 +116,7 @@ export class MixingMachine {
             b: Math.min(255, Math.floor((rgb1.b + rgb2.b) / 2))
         };
 
-        return this.#rgbToHex(mixedRgb.r, mixedRgb.g, mixedRgb.b);
+        return rgbToHex(mixedRgb.r, mixedRgb.g, mixedRgb.b);
     }
 
     #generateRandomHexColor() {
