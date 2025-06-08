@@ -1,4 +1,5 @@
 export async function fetchData(cityName) {
+    // Check if city name is provided
     if (!cityName) {
         console.error("City name is required.");
         alert("Voer een stadsnaam in.");
@@ -6,23 +7,28 @@ export async function fetchData(cityName) {
     }
 
     try {
+        // Build geocoding API URL to get latitude and longitude for the city
         const geocodingUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityName)}&count=5&format=json&language=nl`;
         const geoResponse = await fetch(geocodingUrl);
 
+        // Check if geocoding API call was successful
         if (!geoResponse.ok) {
             throw new Error(`Geocoding HTTP error! status: ${geoResponse.status}`);
         }
 
         const geoData = await geoResponse.json();
 
+        // Check if any results were found for the city
         if (!geoData.results || geoData.results.length === 0) {
             alert(`Kon de locatie niet vinden voor: ${cityName}`);
             console.error("No results found for city:", cityName);
             return null;
         }
 
+        // Extract latitude, longitude, and city name from the first result
         const {latitude, longitude, name: foundCityName} = geoData.results[0];
 
+        // Build weather API URL using the obtained coordinates
         const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,precipitation`;
         const weatherResponse = await fetch(weatherUrl);
 
@@ -34,14 +40,17 @@ export async function fetchData(cityName) {
 
         console.log("Weather data for", foundCityName, ":", weatherData);
 
+        // Check if current weather data is available
         if (weatherData.current) {
 
             const temperature = weatherData.current.temperature_2m;
             const precipitation = weatherData.current.precipitation !== 0 ? "ja" : "nee";
 
+            // Show alert with current temperature and precipitation info
             alert(`Huidige temperatuur in ${foundCityName}: ${temperature}°C. Neerslag: ${precipitation}`);
 
         } else {
+            // Show alert if no temperature data is available
             alert(`Geen temperatuurgegevens beschikbaar voor ${foundCityName}.`);
         }
 
