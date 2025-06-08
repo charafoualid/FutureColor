@@ -140,11 +140,14 @@ export class MixingMachineView {
         colorSwatch.title = `Mixed by machine ${machineId.substring(0,8)}. Message: ${result.message}`; 
 
         colorSwatch.draggable = true;
-        colorSwatch.setAttribute('data-pot-id', `mixed-${machineId}-${Date.now()}`); // Assign a unique ID for drag-and-drop or other interactions.
+        const uniquePotId = `mixed-${machineId}-${Date.now()}`;
+        colorSwatch.setAttribute('data-pot-id', uniquePotId); 
+        colorSwatch.setAttribute('data-color', result.color); // Store actual color
         colorSwatch.setAttribute('data-is-mixed-result', 'true');
         
         colorSwatch.addEventListener('dragstart', (event) => {
             event.dataTransfer.setData('text/plain', colorSwatch.textContent); 
+            event.dataTransfer.setData('text/color', result.color); // Set the color data
             event.dataTransfer.effectAllowed = 'move';
             event.target.classList.add('dragging-pot');
         });
@@ -160,11 +163,10 @@ export class MixingMachineView {
         const machineDiv = this.container.querySelector(`.mixing-machine-instance[data-machine-id="${machineId}"]`);
         if (machineDiv) {
             const dropzone = machineDiv.querySelector('.machine-pots-dropzone');
-            dropzone.innerHTML = ''; // Clear placeholder or previous pot
+            dropzone.innerHTML = '';
 
             const potElement = document.createElement('div');
             potElement.classList.add('pot'); 
-            // potElement.setAttribute('data-pot-id', pot.id); // Optional: Pot ID can be set here if needed for specific interactions.
 
             let potText = `Pot (${pot.id.substring(0, 4)})`;
             if (!pot.isEmpty()) {
