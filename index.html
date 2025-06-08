@@ -1,92 +1,92 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8" />
-  <title>Kleur- en Mengsimulator</title>
-  <link rel="stylesheet" href="styles/style.css" />
+    <meta charset="UTF-8"/>
+    <title>Kleur- en Mengsimulator</title>
+    <link rel="stylesheet" href="styles/style.css"/>
 </head>
 <body>
-  <main class="grid-container">
-    
+<main class="grid-container">
+
     <!-- 🧭 Linkerkolom -->
     <section class="left-column">
 
-      <div id="locator-form">
-        <h2>Zoek locatie</h2>
-        <!-- Placeholder voor toekomstige zoekfunctionaliteit -->
-        <form>
-          <input type="text" id="location-input" placeholder="Stad of locatie" />
-          <button type="submit">Zoek</button>
-        </form>
-      </div>
-
-      <div id="form-section">
-        <h2>Ingrediënt Aanmaken</h2>
-        <form id="ingredient-form">
-          <label>
-            Minimale mengtijd (ms):
-            <input type="number" name="mixTime"  />
-          </label>
-
-          <label>
-            Mengsnelheid (1-10):
-            <input type="number" name="mixSpeed"   />
-          </label>
-
-          <label>
-            Kleur:
-            <input type="color" name="color" value="#c24c4c"  />
-          </label>
-
-          <label>
-            Structuur:
-            <select name="texture" >
-              <option value="korrel">Korrel</option>
-              <option value="grove-korrel">Grove korrel</option>
-              <option value="glad">Glad</option>
-              <option value="slijmerig">Slijmerig</option>
-            </select>
-          </label>
-
-          <button type="submit">Voeg toe</button>
-        </form>
-      </div>
-
-      <div id="ingredient-list">
-        <div class="ingredients-header">
-          <h2>Ingrediënten</h2>
-          <button class="clear" type="button" id="clear-ingredients-button">Wissen</button>
+        <div id="locator-form">
+            <h2>Zoek locatie</h2>
+            <!-- Placeholder voor toekomstige zoekfunctionaliteit -->
+            <form>
+                <input type="text" id="location-input" placeholder="Stad of locatie"/>
+                <button type="submit">Zoek</button>
+            </form>
         </div>
-        <div id="ingredients-container"></div>
-      </div>
+
+        <div id="form-section">
+            <h2>Ingrediënt Aanmaken</h2>
+            <form id="ingredient-form">
+                <label>
+                    Minimale mengtijd (ms):
+                    <input type="number" name="mixTime"/>
+                </label>
+
+                <label>
+                    Mengsnelheid (1-10):
+                    <input type="number" name="mixSpeed"/>
+                </label>
+
+                <label>
+                    Kleur:
+                    <input type="color" name="color" value="#c24c4c"/>
+                </label>
+
+                <label>
+                    Structuur:
+                    <select name="texture">
+                        <option value="korrel">Korrel</option>
+                        <option value="grove-korrel">Grove korrel</option>
+                        <option value="glad">Glad</option>
+                        <option value="slijmerig">Slijmerig</option>
+                    </select>
+                </label>
+
+                <button type="submit">Voeg toe</button>
+            </form>
+        </div>
+
+        <div id="ingredient-list">
+            <div class="ingredients-header">
+                <h2>Ingrediënten</h2>
+                <button class="clear" type="button" id="clear-ingredients-button">Wissen</button>
+            </div>
+            <div id="ingredients-container"></div>
+        </div>
 
     </section>
 
     <!-- ⚙️ Rechterkolom -->
     <section class="right-column">
-      <div id="pots-display">
-          <div class="pots-header">
-            <h2>Potten</h2>
-              <button type="button" id="add-pot-button">Voeg toe</button>
-              <button class="clear" type="button" id="clear-pots-button">Wissen</button> 
-          </div>
-        <div id="pots-container">
-          
+        <div id="pots-display">
+            <div class="pots-header">
+                <h2>Potten</h2>
+                <button type="button" id="add-pot-button">Voeg toe</button>
+                <button class="clear" type="button" id="clear-pots-button">Wissen</button>
+            </div>
+            <div id="pots-container">
+
+            </div>
         </div>
-      </div>
 
-      <div id="mixing-machine">
-        <!-- Hier komt de simulatie van mengen -->
-      </div>
+        <div id="mixing-machine">
+            <!-- Hier komt de simulatie van mengen -->
+        </div>
 
-      <div id="mix-result">
-        <h2>Gemengde Kleuren</h2>
-        <!-- Hier komt het resultaat van de menging -->
-      </div>
+        <div id="mix-result">
+            <h2>Gemengde Kleuren</h2>
+            <!-- Hier komt het resultaat van de menging -->
+        </div>
     </section>
 
-  </main>
+</main>
 
-  <script type="module" src="src/main.js"></script>
+<script type="module" src="src/main.js"></script>
 </body>
 </html>
