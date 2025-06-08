@@ -1,4 +1,5 @@
 ﻿import { MIXING_MACHINE_STATUS } from '../constants.js';
+import { getTriadicColors } from '../utils/colorUtils.js'; // Ensure this import is present
 
 export class MixingMachineView {
     constructor(containerId, resultContainerId) {
@@ -155,8 +156,64 @@ export class MixingMachineView {
             event.target.classList.remove('dragging-pot');
         });
 
+        // Add click listener for triadic colors
+        colorSwatch.addEventListener('click', () => {
+            const baseColorHex = result.color;
+            const triadicColorsData = getTriadicColors(baseColorHex);
+            this.displayTriadicPopup(baseColorHex, triadicColorsData);
+        });
+
 
         resultsList.appendChild(colorSwatch);
+    }
+
+    displayTriadicPopup(originalColorHex, triadicColorsData) {
+        // Remove existing popup if any
+        const existingPopup = document.getElementById('triadic-popup-dynamic');
+        if (existingPopup) {
+            existingPopup.remove();
+        }
+
+        const popupOverlay = document.createElement('div');
+        popupOverlay.id = 'triadic-popup-dynamic';
+        popupOverlay.classList.add('triadic-popup-overlay');
+
+        const popupContent = document.createElement('div');
+        popupContent.classList.add('triadic-popup-content');
+
+        popupContent.innerHTML = `
+            <h3>
+                Triadic Colors for ${originalColorHex}
+                <span class="original-color-chip" style="background-color: ${originalColorHex};"></span>
+            </h3>
+            <div class="triadic-colors-display">
+                ${triadicColorsData.map(colorData => `
+                    <div class="triadic-color-swatch-container">
+                        <div class="triadic-popup-swatch" style="background-color: ${colorData.hex};"></div>
+                        <div class="triadic-color-info">
+                            <p><strong>HEX:</strong> ${colorData.hex}</p>
+                            <p><strong>HSL:</strong> ${colorData.hsl.h}°, ${colorData.hsl.s}%, ${colorData.hsl.l}%</p>
+                            <p><strong>RGB:</strong> ${colorData.rgb.r}, ${colorData.rgb.g}, ${colorData.rgb.b}</p>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            <button id="close-triadic-popup">Close</button>
+        `;
+
+        popupOverlay.appendChild(popupContent);
+        document.body.appendChild(popupOverlay);
+
+        const closeButton = popupContent.querySelector('#close-triadic-popup');
+        closeButton.addEventListener('click', () => {
+            popupOverlay.remove();
+        });
+
+        popupOverlay.addEventListener('click', (event) => {
+            if (event.target === popupOverlay) { // Clicked on overlay, not content
+                popupOverlay.remove();
+            }
+        });
     }
 
     addPotToMachineView(machineId, pot) {

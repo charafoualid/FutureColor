@@ -1,3 +1,5 @@
+import { getTriadicColors } from '../utils/colorUtils.js'; // Import color utility
+
 export class ColorTestController {
     constructor(view, mixedResultsListId) {
         this.view = view;
@@ -5,6 +7,7 @@ export class ColorTestController {
 
         this.view.setOnGenerateGridCallback(this.handleGenerateGrid.bind(this));
         this.view.setOnDropColorOnCellCallback(this.handleDropColorOnCell.bind(this));
+        this.view.setOnCellClickCallback(this.handleCellClick.bind(this)); // Set the new callback
     }
 
     init() {
@@ -33,6 +36,18 @@ export class ColorTestController {
 
     handleDropColorOnCell(cellElement, color) {
         this.view.fillCell(cellElement, color);
+    }
+
+    handleCellClick(colorHex) { // Handler for cell clicks
+        if (!colorHex) return; // Do nothing if no color
+
+        try {
+            const triadicColorsData = getTriadicColors(colorHex);
+            this.view.displayTriadicPopup(colorHex, triadicColorsData);
+        } catch (error) {
+            console.error("Error generating or displaying triadic colors:", error);
+            // Optionally, inform the user if the color is invalid for triadic calculation
+        }
     }
 
     refreshAvailableColors() {

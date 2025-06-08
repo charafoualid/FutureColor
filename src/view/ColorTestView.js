@@ -12,6 +12,7 @@ export class ColorTestView {
 
         this.onGenerateGridCallback = null;
         this.onDropColorOnCellCallback = null;
+        this.onCellClickCallback = null; // New callback for cell clicks
     }
 
     setOnGenerateGridCallback(callback) {
@@ -20,6 +21,10 @@ export class ColorTestView {
 
     setOnDropColorOnCellCallback(callback) {
         this.onDropColorOnCellCallback = callback;
+    }
+
+    setOnCellClickCallback(callback) { // Setter for the new callback
+        this.onCellClickCallback = callback;
     }
 
     initializeEventListeners() {
@@ -69,12 +74,21 @@ export class ColorTestView {
                     this.onDropColorOnCellCallback(cell, color);
                 }
             });
+
+            cell.addEventListener('click', (event) => { // Add click listener
+                const color = event.target.getAttribute('data-color');
+                if (color && this.onCellClickCallback) {
+                    this.onCellClickCallback(color);
+                }
+            });
+
             this.gridContainerElement.appendChild(cell);
         }
     }
 
     fillCell(cellElement, color) {
         cellElement.style.backgroundColor = color;
+        cellElement.setAttribute('data-color', color); // Store color in data attribute
         cellElement.textContent = ''; // Clear any placeholder text
     }
     
@@ -82,6 +96,7 @@ export class ColorTestView {
         const cells = this.gridContainerElement.querySelectorAll('.color-test-cell');
         cells.forEach(cell => {
             cell.style.backgroundColor = '#e0e0e0'; // Reset to default background
+            cell.removeAttribute('data-color'); // Remove stored color
             cell.classList.remove('drag-over-cell');
         });
     }
@@ -106,6 +121,55 @@ export class ColorTestView {
 
     clearAvailableColors() {
         this.availableColorsContainerElement.innerHTML = '';
+    }
+
+    displayTriadicPopup(originalColorHex, triadicColorsData) {
+        // Remove existing popup if any
+        const existingPopup = document.getElementById('triadic-popup-dynamic-testview');
+        if (existingPopup) {
+            existingPopup.remove();
+        }
+
+        const popupOverlay = document.createElement('div');
+        popupOverlay.id = 'triadic-popup-dynamic-testview'; // Unique ID for this popup
+        popupOverlay.classList.add('triadic-popup-overlay'); // Reuse existing styles if suitable
+
+        const popupContent = document.createElement('div');
+        popupContent.classList.add('triadic-popup-content'); // Reuse existing styles if suitable
+
+        popupContent.innerHTML = `
+            <h3>
+                Triadic Colors for ${originalColorHex}
+                <span class="original-color-chip" style="background-color: ${originalColorHex};"></span>
+            </h3>
+            <div class="triadic-colors-display">
+                ${triadicColorsData.map(colorData => `
+                    <div class="triadic-color-swatch-container">
+                        <div class="triadic-popup-swatch" style="background-color: ${colorData.hex};"></div>
+                        <div class="triadic-color-info">
+                            <p><strong>HEX:</strong> ${colorData.hex}</p>
+                            <p><strong>HSL:</strong> ${colorData.hsl.h}°, ${colorData.hsl.s}%, ${colorData.hsl.l}%</p>
+                            <p><strong>RGB:</strong> ${colorData.rgb.r}, ${colorData.rgb.g}, ${colorData.rgb.b}</p>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            <button id="close-triadic-popup-testview">Close</button>
+        `;
+
+        popupOverlay.appendChild(popupContent);
+        document.body.appendChild(popupOverlay);
+
+        const closeButton = popupContent.querySelector('#close-triadic-popup-testview');
+        closeButton.addEventListener('click', () => {
+            popupOverlay.remove();
+        });
+
+        popupOverlay.addEventListener('click', (event) => {
+            if (event.target === popupOverlay) { // Clicked on overlay, not content
+                popupOverlay.remove();
+            }
+        });
     }
 
     show() {
