@@ -139,7 +139,7 @@ export class ColorTestView {
 
         popupContent.innerHTML = `
             <h3>
-                Triadic Colors for ${originalColorHex}
+                Triadische kleuren voor ${originalColorHex}
                 <span class="original-color-chip" style="background-color: ${originalColorHex};"></span>
             </h3>
             <div class="triadic-colors-display">
@@ -154,7 +154,7 @@ export class ColorTestView {
                     </div>
                 `).join('')}
             </div>
-            <button id="close-triadic-popup-testview">Close</button>
+            <button id="close-triadic-popup-testview">Sluiten</button>
         `;
 
         popupOverlay.appendChild(popupContent);

@@ -42,7 +42,7 @@ export class MixingMachineView {
                 <button type="button" class="clear" id="clear-machines-button">Wissen</button>
             </div>
             <div id="mixing-machines-list">
-                <!-- Placeholder for rendering mixing machine instances. -->
+                <!-- Plek voor het renderen van mengmachine-instanties. -->
             </div>
         `;
         this.resultContainer.innerHTML = '<h2>Resultaten</h2><div id="mix-results-list"></div>';
@@ -79,7 +79,7 @@ export class MixingMachineView {
             </label>
             <div class="machine-pots-dropzone" data-machine-id="${machine.id}">
                 <p class="dropzone-placeholder">Sleep potten hierheen</p>
-                <!-- The visual representation of the pot will replace this placeholder. -->
+                <!-- De visuele representatie van de pot vervangt deze placeholder. -->
             </div>
             <button class="start-mix-button" data-machine-id="${machine.id}">Start Mix</button>
             <div class="machine-status">Status: ${machine.status}</div>
@@ -138,7 +138,7 @@ export class MixingMachineView {
         colorSwatch.classList.add('ingredient'); // Use existing .ingredient style for the color swatch.
         colorSwatch.style.backgroundColor = result.color;
         colorSwatch.textContent = result.color; 
-        colorSwatch.title = `Mixed by machine ${machineId.substring(0,8)}. Message: ${result.message}`; 
+        colorSwatch.title = `Gemengd door machine ${machineId.substring(0,8)}. Bericht: ${result.message}`; 
 
         colorSwatch.draggable = true;
         const uniquePotId = `mixed-${machineId}-${Date.now()}`;
@@ -183,7 +183,7 @@ export class MixingMachineView {
 
         popupContent.innerHTML = `
             <h3>
-                Triadic Colors for ${originalColorHex}
+                Triadische kleuren voor ${originalColorHex}
                 <span class="original-color-chip" style="background-color: ${originalColorHex};"></span>
             </h3>
             <div class="triadic-colors-display">
@@ -198,7 +198,7 @@ export class MixingMachineView {
                     </div>
                 `).join('')}
             </div>
-            <button id="close-triadic-popup">Close</button>
+            <button id="close-triadic-popup">Sluiten</button>
         `;
 
         popupOverlay.appendChild(popupContent);
