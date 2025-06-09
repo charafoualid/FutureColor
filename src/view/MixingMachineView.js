@@ -1,5 +1,6 @@
-﻿import { MIXING_MACHINE_STATUS } from '../constants.js';
-import { getTriadicColors } from '../utils/colorUtils.js'; // Ensure this import is present
+﻿// view/MixingMachineView.js
+import { MIXING_MACHINE_STATUS } from '../constants.js';
+import { getTriadicColors } from '../utils/colorUtils.js';
 
 export class MixingMachineView {
     constructor(containerId, resultContainerId) {
@@ -10,6 +11,7 @@ export class MixingMachineView {
         this.onSetSpeedCallback = null;
         this.onSetTimeCallback = null;
         this.onAddPotToMachineCallback = null;
+        this.onClearMachinesCallback = null; // NIEUW: Callback voor wissen
     }
 
     // --- Set Callbacks to Controller ---
@@ -33,6 +35,10 @@ export class MixingMachineView {
         this.onAddPotToMachineCallback = callback;
     }
 
+    setOnClearMachinesCallback(callback) { // NIEUW: Setter voor de wissen callback
+        this.onClearMachinesCallback = callback;
+    }
+
     // --- UI Rendering ---
     renderInitialView() {
         this.container.innerHTML = `
@@ -42,8 +48,7 @@ export class MixingMachineView {
                 <button type="button" class="clear" id="clear-machines-button">Wissen</button>
             </div>
             <div id="mixing-machines-list">
-                <!-- Plek voor het renderen van mengmachine-instanties. -->
-            </div>
+                </div>
         `;
         this.resultContainer.innerHTML = '<h2>Resultaten</h2><div id="mix-results-list"></div>';
 
@@ -56,8 +61,8 @@ export class MixingMachineView {
 
         // Event listener for the "Wissen" (clear) button.
         document.getElementById('clear-machines-button').addEventListener('click', () => {
-            if (typeof this.clearAllMachinesView === 'function') {
-                this.clearAllMachinesView();
+            if (this.onClearMachinesCallback) { // Gebruik de nieuwe callback
+                this.onClearMachinesCallback();
             }
         });
     }
@@ -79,14 +84,12 @@ export class MixingMachineView {
             </label>
             <div class="machine-pots-dropzone" data-machine-id="${machine.id}">
                 <p class="dropzone-placeholder">Sleep potten hierheen</p>
-                <!-- De visuele representatie van de pot vervangt deze placeholder. -->
             </div>
             <button class="start-mix-button" data-machine-id="${machine.id}">Start Mix</button>
             <div class="machine-status">Status: ${machine.status}</div>
             <div class="machine-result"></div>
         `;
 
-        // Attach event listeners for machine-specific controls.
         machineDiv.querySelector('.start-mix-button').addEventListener('click', () => {
             if (this.onStartMixCallback) {
                 this.onStartMixCallback(machine.id);
@@ -105,12 +108,10 @@ export class MixingMachineView {
             }
         });
 
-        // Setup drag and drop for pots onto this machine instance.
         const dropzone = machineDiv.querySelector('.machine-pots-dropzone');
         dropzone.addEventListener('dragover', (event) => this.handleDragOver(event));
         dropzone.addEventListener('dragleave', (event) => this.handleDragLeave(event));
         dropzone.addEventListener('drop', (event) => this.handleDropPotOnMachine(event, machine.id));
-
 
         machineList.appendChild(machineDiv);
     }
@@ -120,11 +121,9 @@ export class MixingMachineView {
         if (machineDiv) {
             machineDiv.querySelector('.machine-status').textContent = `Status: ${status}`;
             const resultDiv = machineDiv.querySelector('.machine-result');
-            // Clear previous result text from the machine's own display area.
             resultDiv.innerHTML = ''; 
 
             if (status === MIXING_MACHINE_STATUS.COMPLETE && result) {
-                // Display the final mix result in the dedicated results area.
                 this.renderMixResult(machineId, result);
             }
         }
@@ -134,8 +133,15 @@ export class MixingMachineView {
         const resultsList = document.getElementById('mix-results-list');
         if (!resultsList) return;
 
+        // Controleer of er al een resultaat voor deze machine bestaat en verwijder het
+        const existingResult = resultsList.querySelector(`.mixed-result[data-machine-id="${machineId}"]`);
+        if (existingResult) {
+            existingResult.remove();
+        }
+
         const colorSwatch = document.createElement('div');
-        colorSwatch.classList.add('ingredient'); // Use existing .ingredient style for the color swatch.
+        colorSwatch.classList.add('ingredient', 'mixed-result'); // Voeg 'mixed-result' toe voor identificatie
+        colorSwatch.setAttribute('data-machine-id', machineId); // Koppel resultaat aan machine ID
         colorSwatch.style.backgroundColor = result.color;
         colorSwatch.textContent = result.color; 
         colorSwatch.title = `Gemengd door machine ${machineId.substring(0,8)}. Bericht: ${result.message}`; 
@@ -143,12 +149,12 @@ export class MixingMachineView {
         colorSwatch.draggable = true;
         const uniquePotId = `mixed-${machineId}-${Date.now()}`;
         colorSwatch.setAttribute('data-pot-id', uniquePotId); 
-        colorSwatch.setAttribute('data-color', result.color); // Store actual color
+        colorSwatch.setAttribute('data-color', result.color);
         colorSwatch.setAttribute('data-is-mixed-result', 'true');
         
         colorSwatch.addEventListener('dragstart', (event) => {
             event.dataTransfer.setData('text/plain', colorSwatch.textContent); 
-            event.dataTransfer.setData('text/color', result.color); // Set the color data
+            event.dataTransfer.setData('text/color', result.color);
             event.dataTransfer.effectAllowed = 'move';
             event.target.classList.add('dragging-pot');
         });
@@ -156,19 +162,16 @@ export class MixingMachineView {
             event.target.classList.remove('dragging-pot');
         });
 
-        // Add click listener for triadic colors
         colorSwatch.addEventListener('click', () => {
             const baseColorHex = result.color;
             const triadicColorsData = getTriadicColors(baseColorHex);
             this.displayTriadicPopup(baseColorHex, triadicColorsData);
         });
 
-
         resultsList.appendChild(colorSwatch);
     }
 
     displayTriadicPopup(originalColorHex, triadicColorsData) {
-        // Remove existing popup if any
         const existingPopup = document.getElementById('triadic-popup-dynamic');
         if (existingPopup) {
             existingPopup.remove();
@@ -210,7 +213,7 @@ export class MixingMachineView {
         });
 
         popupOverlay.addEventListener('click', (event) => {
-            if (event.target === popupOverlay) { // Clicked on overlay, not content
+            if (event.target === popupOverlay) {
                 popupOverlay.remove();
             }
         });
@@ -242,11 +245,10 @@ export class MixingMachineView {
         const machineDiv = this.container.querySelector(`.mixing-machine-instance[data-machine-id="${machineId}"]`);
         if (machineDiv) {
             const dropzone = machineDiv.querySelector('.machine-pots-dropzone');
-            dropzone.innerHTML = '<p class="dropzone-placeholder">Sleep potten hierheen</p>'; // Restore the default placeholder text in the dropzone.
+            dropzone.innerHTML = '<p class="dropzone-placeholder">Sleep potten hierheen</p>';
         }
     }
 
-    // --- Drag and Drop Handlers for Pots on Machine ---
     handleDragOver(event) {
         event.preventDefault();
         event.currentTarget.classList.add('drag-over-machine');
@@ -266,13 +268,20 @@ export class MixingMachineView {
         }
     }
 
+    // Aangepaste clearAllMachinesView om de machines zelf te wissen
     clearAllMachinesView() {
         const machineList = document.getElementById('mixing-machines-list');
         if (machineList) {
             machineList.innerHTML = '';
         }
+        // Let op: we roepen clearResultsView apart aan in de controller bij halwisseling
+        // of als alle machines van een hal gewist worden.
+    }
+
+    // Nieuwe methode om alleen de resultaten te wissen
+    clearResultsView() {
         const resultsList = document.getElementById('mix-results-list');
-        if(resultsList) {
+        if (resultsList) {
             resultsList.innerHTML = '';
         }
     }

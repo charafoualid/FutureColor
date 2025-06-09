@@ -33,6 +33,10 @@ body {
     background-color: #007bff;
 }
 
+.app-header nav button.active-hall {
+    background-color: #007bff;
+}
+
 /* View switching */
 .view-section {
     padding: 2rem; /* Add padding that was previously on body */
@@ -474,4 +478,26 @@ button {
 
 #close-triadic-popup:hover {
     background-color: #5a6268;
+}
+
+/* style.css (voorbeeld) */
+#hall-selector-container {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.hall-button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.hall-button.active-hall {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
 }

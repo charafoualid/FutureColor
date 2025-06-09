@@ -15,6 +15,26 @@ window.addEventListener('DOMContentLoaded', () => {
     const potStoreInstance = potController.store;
     const mixingMachineController = new MixingMachineController(potStoreInstance);
 
+    // --- Hall Selector Setup ---
+    // Haal de knoppen direct op, want ze zijn nu altijd in de HTML
+    const hallAButton = document.getElementById('hall-a-button');
+    const hallBButton = document.getElementById('hall-b-button');
+
+    // Zorg ervoor dat de event listeners alleen worden toegevoegd als de knoppen bestaan
+    if (hallAButton && hallBButton) {
+        hallAButton.addEventListener('click', () => {
+            mixingMachineController.setActiveHall('hall-a');
+            hallAButton.classList.add('active-hall');
+            hallBButton.classList.remove('active-hall');
+        });
+
+        hallBButton.addEventListener('click', () => {
+            mixingMachineController.setActiveHall('hall-b');
+            hallBButton.classList.add('active-hall');
+            hallAButton.classList.remove('active-hall');
+        });
+    }
+
     // --- Weather Location Form Setup ---
     const locationForm = document.getElementById('locator-form');
     const locationInput = document.getElementById('location-input');
@@ -45,25 +65,27 @@ window.addEventListener('DOMContentLoaded', () => {
     const navSimulatorButton = document.getElementById('nav-simulator');
     const navColorTestButton = document.getElementById('nav-color-test');
     const mainSimulatorView = document.getElementById('main-simulator-view');
-    // colorTestView.pageElement is already defined in ColorTestView
 
     navSimulatorButton.addEventListener('click', () => {
-        mainSimulatorView.style.display = 'grid'; // or 'flex' or 'block' as per its original display type
-        colorTestController.deactivate(); // Deactivate also hides the view
+        mainSimulatorView.style.display = 'grid';
+        colorTestController.deactivate();
         navSimulatorButton.classList.add('active-nav');
         navColorTestButton.classList.remove('active-nav');
     });
 
     navColorTestButton.addEventListener('click', () => {
         mainSimulatorView.style.display = 'none';
-        colorTestController.activate(); // Activate also shows the view
+        colorTestController.activate();
         navColorTestButton.classList.add('active-nav');
         navSimulatorButton.classList.remove('active-nav');
     });
 
     // Initialize default view (Simulator)
     mainSimulatorView.style.display = 'grid';
-    colorTestView.hide(); // Ensure it's hidden initially
+    colorTestView.hide();
     navSimulatorButton.classList.add('active-nav');
-
+    // Zorg ervoor dat Hal A standaard actief is bij laden
+    if (hallAButton) { // Deze check is nu redundant als je zeker weet dat de knoppen bestaan
+        hallAButton.classList.add('active-hall');
+    }
 });
