@@ -1,44 +1,59 @@
-﻿export class MixingMachineStore {
+﻿// model/MixingMachineStore.js
+import { MachineStore } from './MachineStore.js'; // Import the new MachineStore
+
+export class MixingMachineStore {
     constructor() {
-        this.mixingMachines = [];
+        this.hallStores = {
+            'hall-a': new MachineStore('hall-a'),
+            'hall-b': new MachineStore('hall-b')
+        };
+        this.activeHallId = 'hall-a'; // Default active hall
     }
 
-    /**
-     * Adds a new mixing machine to the store.
-     */
+    setActiveHall(hallId) {
+        if (this.hallStores[hallId]) {
+            this.activeHallId = hallId;
+        } else {
+            console.warn(`Hal met ID ${hallId} bestaat niet.`);
+        }
+    }
+
+    getActiveHallStore() {
+        return this.hallStores[this.activeHallId];
+    }
+
+    // Proxy methods to the active hall's store
     addMachine(machine) {
-        this.mixingMachines.push(machine);
+        this.getActiveHallStore().addMachine(machine);
     }
 
-    /**
-     * Removes a mixing machine from the store by its ID.
-     */
     removeMachineById(machineId) {
-        this.mixingMachines = this.mixingMachines.filter(machine => machine.id !== machineId);
+        this.getActiveHallStore().removeMachineById(machineId);
     }
 
-    /**
-     * Retrieves a mixing machine by its ID.
-     */
     getMachineById(machineId) {
-        return this.mixingMachines.find(machine => machine.id === machineId);
+        // We moeten machines kunnen vinden in *alle* hallen voor bepaalde operaties
+        // (bijv. de 35 graden regel), dus we zoeken door alle stores.
+        for (const hallId in this.hallStores) {
+            const machine = this.hallStores[hallId].getMachineById(machineId);
+            if (machine) return machine;
+        }
+        return null;
     }
 
-    /**
-     * Retrieves all mixing machines.
-     */
-    getAllMachines() {
-        return this.mixingMachines;
+    getAllMachinesOfActiveHall() { // Nieuwe methode
+        return this.getActiveHallStore().getAllMachines();
     }
 
-    /**
-     * Clears all mixing machines from the store.
-     */
-    clearAllMachines() {
-        this.mixingMachines = [];
+    getAllMachinesAcrossAllHalls() { // Voor globale checks zoals temperatuurregel
+        return Object.values(this.hallStores).flatMap(store => store.getAllMachines());
     }
 
-    isEmpty() {
-        return this.mixingMachines.length === 0;
+    clearAllMachinesOfActiveHall() { // Nieuwe methode
+        this.getActiveHallStore().clearAllMachines();
+    }
+
+    isEmpty() { // Checkt of de actieve hal leeg is
+        return this.getActiveHallStore().isEmpty();
     }
 }
