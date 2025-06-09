@@ -1,92 +1,115 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8" />
-  <title>Kleur- en Mengsimulator</title>
-  <link rel="stylesheet" href="styles/style.css" />
+    <meta charset="UTF-8"/>
+    <title>Kleur- en Mengsimulator</title>
+    <link rel="stylesheet" href="styles/style.css"/>
 </head>
 <body>
-  <main class="grid-container">
-    
+
+<header class="app-header">
+    <nav>
+        <button id="nav-simulator" class="nav-button active-nav">Simulator</button>
+        <button id="nav-color-test" class="nav-button">Kleurentest</button>
+    </nav>
+</header>
+
+<main id="main-simulator-view" class="grid-container view-section active-view">
+
     <!-- 🧭 Linkerkolom -->
     <section class="left-column">
 
-      <div id="locator-form">
-        <h2>Zoek locatie</h2>
-        <!-- Placeholder voor toekomstige zoekfunctionaliteit -->
-        <form>
-          <input type="text" id="location-input" placeholder="Stad of locatie" />
-          <button type="submit">Zoek</button>
-        </form>
-      </div>
-
-      <div id="form-section">
-        <h2>Ingrediënt Aanmaken</h2>
-        <form id="ingredient-form">
-          <label>
-            Minimale mengtijd (ms):
-            <input type="number" name="mixTime"  />
-          </label>
-
-          <label>
-            Mengsnelheid (1-10):
-            <input type="number" name="mixSpeed"   />
-          </label>
-
-          <label>
-            Kleur:
-            <input type="color" name="color" value="#c24c4c"  />
-          </label>
-
-          <label>
-            Structuur:
-            <select name="texture" >
-              <option value="korrel">Korrel</option>
-              <option value="grove-korrel">Grove korrel</option>
-              <option value="glad">Glad</option>
-              <option value="slijmerig">Slijmerig</option>
-            </select>
-          </label>
-
-          <button type="submit">Voeg toe</button>
-        </form>
-      </div>
-
-      <div id="ingredient-list">
-        <div class="ingredients-header">
-          <h2>Ingrediënten</h2>
-          <button class="clear" type="button" id="clear-ingredients-button">Wissen</button>
+        <div id="locator-form">
+            <h2>Zoek locatie</h2>
+            <form>
+                <input type="text" id="location-input" placeholder="Stad of locatie"/>
+                <button type="submit">Zoek</button>
+            </form>
         </div>
-        <div id="ingredients-container"></div>
-      </div>
+
+        <div id="form-section">
+            <h2>Ingrediënt Aanmaken</h2>
+            <form id="ingredient-form">
+                <label>
+                    Minimale mengtijd (ms):
+                    <input type="number" name="mixTime"/>
+                </label>
+
+                <label>
+                    Mengsnelheid (1-10):
+                    <input type="number" name="mixSpeed"/>
+                </label>
+
+                <label>
+                    Kleur:
+                    <input type="color" name="color" value="#c24c4c"/>
+                </label>
+
+                <label>
+                    Structuur:
+                    <select name="texture">
+                        <option value="korrel">Korrel</option>
+                        <option value="grove-korrel">Grove korrel</option>
+                        <option value="glad">Glad</option>
+                        <option value="slijmerig">Slijmerig</option>
+                    </select>
+                </label>
+
+                <button type="submit">Voeg toe</button>
+            </form>
+        </div>
+
+        <div id="ingredient-list">
+            <div class="ingredients-header">
+                <h2>Ingrediënten</h2>
+                <button class="clear" type="button" id="clear-ingredients-button">Wissen</button>
+            </div>
+            <div id="ingredients-container"></div>
+        </div>
 
     </section>
 
     <!-- ⚙️ Rechterkolom -->
     <section class="right-column">
-      <div id="pots-display">
-          <div class="pots-header">
-            <h2>Potten</h2>
-              <button type="button" id="add-pot-button">Voeg toe</button>
-              <button class="clear" type="button" id="clear-pots-button">Wissen</button> 
-          </div>
-        <div id="pots-container">
-          
+        <div id="pots-display">
+            <div class="pots-header">
+                <h2>Potten</h2>
+                <button type="button" id="add-pot-button">Voeg toe</button>
+                <button class="clear" type="button" id="clear-pots-button">Wissen</button>
+            </div>
+            <div id="pots-container">
+
+            </div>
         </div>
-      </div>
 
-      <div id="mixing-machine">
-        <!-- Hier komt de simulatie van mengen -->
-      </div>
+        <div id="mixing-machine"></div>
 
-      <div id="mix-result">
-        <h2>Gemengde Kleuren</h2>
-        <!-- Hier komt het resultaat van de menging -->
-      </div>
+        <div id="mix-result">
+            <h2>Gemengde Kleuren</h2>
+        </div>
     </section>
 
-  </main>
+</main>
 
-  <script type="module" src="src/main.js"></script>
+<section id="color-test-view" class="view-section" style="display: none;">
+    <div class="container-header">
+        <h2>Kleuren Testraster</h2>
+    </div>
+    <div id="color-test-controls">
+        <label for="grid-rows">Rijen:</label>
+        <input type="number" id="grid-rows" value="6" min="1" max="20">
+        <label for="grid-cols">Kolommen:</label>
+        <input type="number" id="grid-cols" value="6" min="1" max="20">
+        <button id="generate-grid-button">Genereer Raster</button>
+        <button id="clear-grid-button">Wis Raster</button>
+    </div>
+    <div id="available-colors-for-test">
+        <h3>Beschikbare Gemengde Kleuren (Sleep naar raster)</h3>
+        <div id="available-colors-container"></div>
+    </div>
+    <div id="color-test-grid-container"></div>
+</section>
+
+<script type="module" src="src/main.js"></script>
 </body>
 </html>

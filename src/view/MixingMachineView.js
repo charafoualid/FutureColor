@@ -1,4 +1,5 @@
 ﻿import { MIXING_MACHINE_STATUS } from '../constants.js';
+import { getTriadicColors } from '../utils/colorUtils.js'; // Ensure this import is present
 
 export class MixingMachineView {
     constructor(containerId, resultContainerId) {
@@ -41,7 +42,7 @@ export class MixingMachineView {
                 <button type="button" class="clear" id="clear-machines-button">Wissen</button>
             </div>
             <div id="mixing-machines-list">
-                <!-- Placeholder for rendering mixing machine instances. -->
+                <!-- Plek voor het renderen van mengmachine-instanties. -->
             </div>
         `;
         this.resultContainer.innerHTML = '<h2>Resultaten</h2><div id="mix-results-list"></div>';
@@ -78,7 +79,7 @@ export class MixingMachineView {
             </label>
             <div class="machine-pots-dropzone" data-machine-id="${machine.id}">
                 <p class="dropzone-placeholder">Sleep potten hierheen</p>
-                <!-- The visual representation of the pot will replace this placeholder. -->
+                <!-- De visuele representatie van de pot vervangt deze placeholder. -->
             </div>
             <button class="start-mix-button" data-machine-id="${machine.id}">Start Mix</button>
             <div class="machine-status">Status: ${machine.status}</div>
@@ -137,14 +138,17 @@ export class MixingMachineView {
         colorSwatch.classList.add('ingredient'); // Use existing .ingredient style for the color swatch.
         colorSwatch.style.backgroundColor = result.color;
         colorSwatch.textContent = result.color; 
-        colorSwatch.title = `Mixed by machine ${machineId.substring(0,8)}. Message: ${result.message}`; 
+        colorSwatch.title = `Gemengd door machine ${machineId.substring(0,8)}. Bericht: ${result.message}`; 
 
         colorSwatch.draggable = true;
-        colorSwatch.setAttribute('data-pot-id', `mixed-${machineId}-${Date.now()}`); // Assign a unique ID for drag-and-drop or other interactions.
+        const uniquePotId = `mixed-${machineId}-${Date.now()}`;
+        colorSwatch.setAttribute('data-pot-id', uniquePotId); 
+        colorSwatch.setAttribute('data-color', result.color); // Store actual color
         colorSwatch.setAttribute('data-is-mixed-result', 'true');
         
         colorSwatch.addEventListener('dragstart', (event) => {
             event.dataTransfer.setData('text/plain', colorSwatch.textContent); 
+            event.dataTransfer.setData('text/color', result.color); // Set the color data
             event.dataTransfer.effectAllowed = 'move';
             event.target.classList.add('dragging-pot');
         });
@@ -152,19 +156,74 @@ export class MixingMachineView {
             event.target.classList.remove('dragging-pot');
         });
 
+        // Add click listener for triadic colors
+        colorSwatch.addEventListener('click', () => {
+            const baseColorHex = result.color;
+            const triadicColorsData = getTriadicColors(baseColorHex);
+            this.displayTriadicPopup(baseColorHex, triadicColorsData);
+        });
+
 
         resultsList.appendChild(colorSwatch);
+    }
+
+    displayTriadicPopup(originalColorHex, triadicColorsData) {
+        // Remove existing popup if any
+        const existingPopup = document.getElementById('triadic-popup-dynamic');
+        if (existingPopup) {
+            existingPopup.remove();
+        }
+
+        const popupOverlay = document.createElement('div');
+        popupOverlay.id = 'triadic-popup-dynamic';
+        popupOverlay.classList.add('triadic-popup-overlay');
+
+        const popupContent = document.createElement('div');
+        popupContent.classList.add('triadic-popup-content');
+
+        popupContent.innerHTML = `
+            <h3>
+                Triadische kleuren voor ${originalColorHex}
+                <span class="original-color-chip" style="background-color: ${originalColorHex};"></span>
+            </h3>
+            <div class="triadic-colors-display">
+                ${triadicColorsData.map(colorData => `
+                    <div class="triadic-color-swatch-container">
+                        <div class="triadic-popup-swatch" style="background-color: ${colorData.hex};"></div>
+                        <div class="triadic-color-info">
+                            <p><strong>HEX:</strong> ${colorData.hex}</p>
+                            <p><strong>HSL:</strong> ${colorData.hsl.h}°, ${colorData.hsl.s}%, ${colorData.hsl.l}%</p>
+                            <p><strong>RGB:</strong> ${colorData.rgb.r}, ${colorData.rgb.g}, ${colorData.rgb.b}</p>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            <button id="close-triadic-popup">Sluiten</button>
+        `;
+
+        popupOverlay.appendChild(popupContent);
+        document.body.appendChild(popupOverlay);
+
+        const closeButton = popupContent.querySelector('#close-triadic-popup');
+        closeButton.addEventListener('click', () => {
+            popupOverlay.remove();
+        });
+
+        popupOverlay.addEventListener('click', (event) => {
+            if (event.target === popupOverlay) { // Clicked on overlay, not content
+                popupOverlay.remove();
+            }
+        });
     }
 
     addPotToMachineView(machineId, pot) {
         const machineDiv = this.container.querySelector(`.mixing-machine-instance[data-machine-id="${machineId}"]`);
         if (machineDiv) {
             const dropzone = machineDiv.querySelector('.machine-pots-dropzone');
-            dropzone.innerHTML = ''; // Clear placeholder or previous pot
+            dropzone.innerHTML = '';
 
             const potElement = document.createElement('div');
             potElement.classList.add('pot'); 
-            // potElement.setAttribute('data-pot-id', pot.id); // Optional: Pot ID can be set here if needed for specific interactions.
 
             let potText = `Pot (${pot.id.substring(0, 4)})`;
             if (!pot.isEmpty()) {
