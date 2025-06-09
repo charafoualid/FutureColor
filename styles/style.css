@@ -33,6 +33,10 @@ body {
     background-color: #007bff;
 }
 
+.app-header nav button.active-hall {
+    background-color: #007bff;
+}
+
 /* View switching */
 .view-section {
     padding: 2rem; /* Add padding that was previously on body */
