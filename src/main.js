@@ -5,7 +5,7 @@ import { IngredientStore } from "./model/IngredientStore.js";
 import { MixingMachineController } from "./controller/MixingMachineController.js";
 import { ColorTestView } from "./view/ColorTestView.js";
 import { ColorTestController } from "./controller/ColorTestController.js";
-import { fetchData as fetchWeatherData } from "./services/weatherAPI.js";
+import { WeatherController } from "./controller/WeatherController.js";
 
 window.addEventListener('DOMContentLoaded', () => {
     // --- Main Simulator Setup ---
@@ -14,6 +14,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const potController = new PotController(ingredientStore); 
     const potStoreInstance = potController.store;
     const mixingMachineController = new MixingMachineController(potStoreInstance);
+    const weatherController = new WeatherController(); // Instantiated with parentheses
 
     // --- Hall Selector Setup ---
     // Haal de knoppen direct op, want ze zijn nu altijd in de HTML
@@ -32,22 +33,6 @@ window.addEventListener('DOMContentLoaded', () => {
             mixingMachineController.setActiveHall('hall-b');
             hallBButton.classList.add('active-hall');
             hallAButton.classList.remove('active-hall');
-        });
-    }
-
-    // --- Weather Location Form Setup ---
-    const locationForm = document.getElementById('locator-form');
-    const locationInput = document.getElementById('location-input');
-
-    if (locationForm && locationInput) {
-        locationForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const cityName = locationInput.value.toLowerCase().trim();
-            if (cityName) {
-                await fetchWeatherData(cityName);
-            } else {
-                alert("Voer een stadsnaam in om te zoeken.");
-            }
         });
     }
 
