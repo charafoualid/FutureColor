@@ -76,6 +76,25 @@ export class MixingMachine {
 
         const ingredients = this.inputPot.getContents();
         const requiredSpeed = this.inputPot.getDominantMixSpeed();
+        let requiredMixTime = null;
+        
+        if (ingredients.length > 0) {
+            requiredMixTime = ingredients[0].mixTime;
+            for (let i = 1; i < ingredients.length; i++) {
+                if (ingredients[i].mixTime !== requiredMixTime) {
+                    alert("Fout: Niet alle ingrediënten in de pot hebben dezelfde mengtijd.");
+                    this.status = MIXING_MACHINE_STATUS.IDLE;
+                    return;
+                }
+            }
+        }
+
+        if (requiredMixTime !== null && this.mixTimeSetting !== requiredMixTime) {
+            alert(`Fout: De mengtijd van de machine (${this.mixTimeSetting} ms) komt niet overeen met de mengtijd van de ingrediënten (${requiredMixTime} ms).`);
+            this.status = MIXING_MACHINE_STATUS.IDLE;
+            return;
+        }
+
         let mixedColor;
         let message = 'Mixen voltooid!'; // Default success message
 
