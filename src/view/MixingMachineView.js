@@ -121,7 +121,15 @@ export class MixingMachineView {
         if (machineDiv) {
             machineDiv.querySelector('.machine-status').textContent = `Status: ${status}`;
             const resultDiv = machineDiv.querySelector('.machine-result');
-            resultDiv.innerHTML = ''; 
+            resultDiv.innerHTML = '';
+
+            if (status === MIXING_MACHINE_STATUS.MIXING) {
+                machineDiv.classList.add('mixing');
+                resultDiv.innerHTML = `<div class="mixing-spinner" title="Bezig met mengen..."></div>
+                    <div style="margin-top:8px;font-size:0.95em;color:#007bff;">Mengen...</div>`;
+            } else {
+                machineDiv.classList.remove('mixing');
+            }
 
             if (status === MIXING_MACHINE_STATUS.COMPLETE && result) {
                 this.renderMixResult(machineId, result);
