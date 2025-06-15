@@ -14,7 +14,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const potController = new PotController(ingredientStore); 
     const potStoreInstance = potController.store;
     const mixingMachineController = new MixingMachineController(potStoreInstance);
-    const weatherController = new WeatherController(); // Instantiated with parentheses
+    const weatherController = new WeatherController();
 
     // --- Hall Selector Setup ---
     // Haal de knoppen direct op, want ze zijn nu altijd in de HTML
